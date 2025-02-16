@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+import re
+import csv
 import requests
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -101,10 +103,12 @@ def wrap_service_data_info(in_string):
             kill_next_char = False
     return servicedata_info
 
-def wrap_deliverables_info(in_string):
+def wrap_deliverables_info(in_string, docdict):
     test_str = in_string
     remaining_str = test_str
     servicedata_info = ""
+    servicedata_info_out = ""
+    deliverable=""
     line_char_count = 0
     kill_next_char = False
     for i in test_str:
@@ -116,15 +120,23 @@ def wrap_deliverables_info(in_string):
             else:
                 line_char_count = line_char_count + 0.7
             if i == ',':  #outside a bracket replace a comma with a break; remove next (space)
+                urldoc=docdict.get(deliverable)
+                servicedata_info_out = servicedata_info_out + f'<link href="{urldoc}">{deliverable}</link>'
+                servicedata_info_out = servicedata_info_out + ",<br/>"
+                deliverable=""
                 nc=",<br/>"
                 line_char_count = 0
                 kill_next_char = True
+            else:
+                deliverable = deliverable + nc
             servicedata_info=servicedata_info + nc
         else:
             kill_next_char = False
-    return servicedata_info
+    urldoc=docdict.get(deliverable)
+    servicedata_info_out = servicedata_info_out + f'<link href="{urldoc}">{deliverable}</link>'    
+    return servicedata_info_out
 
-def generate_pdf(data, output_filename):
+def generate_pdf(data, docdict, output_filename):
 
     def draw_footer(canvas, doc):
         canvas.saveState()
@@ -323,7 +335,7 @@ def generate_pdf(data, output_filename):
             cept_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style)
 
             app_info = Paragraph(row['Applications'], common_style)
-            cept_doc = Paragraph(wrap_deliverables_info(row['ECC/ERC Harmonisation Measure']), common_style)
+            cept_doc = Paragraph(wrap_deliverables_info(row['ECC/ERC Harmonisation Measure'], docdict), common_style)
             standard = Paragraph(row['Standard'], common_style)  # Wrap text in the "Standard" column
             notes = Paragraph(row['Notes'], common_style)  # Wrap text in the "Notes" column
 
@@ -507,6 +519,28 @@ def download_file(url, file_path):
     except requests.exceptions.RequestException as e:
         print(f"Failed to download {url}. Error: {e}")
 
+def extract_hyperlink(cell):
+    """Extracts the first URL from a cell containing an Excel HYPERLINK function."""
+    match = re.search(r'HYPERLINK\(""([^"]+)""\)', cell)
+    return match.group(1) if match else None
+
+def create_docdb_dict(input_db_csv_file):
+    
+    decision_dict = {}
+
+    # Open the CSV file
+    with open(input_db_csv_file, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')  # Read CSV with headers
+        for row in reader:
+            decision_id = row['Title']  # Assuming "Title" contains the ECC/DEC ID
+            pdf_url = row['pdf']  # The URL for the PDF document
+            pdf_url = re.findall(r'http[^",]+', pdf_url)
+            if pdf_url:
+                decision_dict[decision_id] = pdf_url[0]
+
+    return decision_dict
+    
+
 # Argument parsing setup
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate a frequency allocation PDF from CSV data.")
@@ -532,17 +566,27 @@ def main():
     output_pdf = args.output_pdf
     manipulate_data = args.manipulate_data
 
+    input_db_csv ="LATEST"
+    print(f"Read Document Database: {input_db_csv}")
+    if (input_db_csv=='LATEST'):
+        input_db_csv = os.path.join('.', 'LATEST_docDB.csv')
+        download_file('https://docdb.cept.org/search/exportall', input_db_csv)
+
+    docdict = create_docdb_dict(input_db_csv)
+
+    print(docdict)
+
     # Process input data
     print(f"Processing input file: {input_csv}")
     if (input_csv=='LATEST'):
-        input_csv = os.path.join('.', 'LATEST.csv')
+        input_csv = os.path.join('.', 'LATEST_ECA.csv')
         download_file('https://efis.cept.org/reports/ReportDownloader?reportid=3', input_csv)
 
     data = process_csv(input_csv)  # Replace with your CSV processing function
    
     # Generate the PDF
     print(f"Generating PDF: {output_pdf}")
-    generate_pdf(data, output_pdf)
+    generate_pdf(data, docdict, output_pdf)
 
 if __name__ == "__main__":
     main()
