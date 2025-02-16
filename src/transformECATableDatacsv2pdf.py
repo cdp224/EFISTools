@@ -204,6 +204,7 @@ def generate_pdf(data, output_filename):
                     #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
                     #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
                 ])
+    
     InfoTableStyle=TableStyle([
                         ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
                         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
@@ -220,11 +221,18 @@ def generate_pdf(data, output_filename):
     lines_used = 0  # Track the number of lines used on the current page
     max_lines_per_page = 44  # Adjust based on the content and font size
     
+    #Title
+    bookmark_name = f"ECA Table"
+    paragraph = Paragraph("ECA Table", title_style)
+    paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
+    elements.append(paragraph) # add title
+
+
     # draw the initial first table header
     table_data = [table_headers]
     elements.append(Table(table_data, colWidths=col_widths, style=ECATableHeaderStyle))
     elements.append(Spacer(1, 12))  # Add space after each frequency band table
-    lines_used = 2  # Track the number of lines used on the current page
+    lines_used = 4  # Track the number of lines used on the current page
 
     table_data = []  # Initialize the table_data list before the loop
     first_line = True
@@ -359,10 +367,8 @@ def generate_pdf(data, output_filename):
                 elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableHeaderStyle))
                 elements.append(Spacer(1, 12))  # Add space after each frequency band table
                 lines_used = 4  # Track the number of lines used on the current page
-                #elements.append(paragraph)
                 first_line = True
-                #elements.append(Spacer(1, 12))  # Add space after each frequency band table
-                #table_data=[]
+
         elif (inECAFootnoteTable):
                 if (row['Upper Frequency']=="title" and docType=="ETSI"):
                     print("ETSI what start")
@@ -442,12 +448,11 @@ def generate_pdf(data, output_filename):
                     elements.append(Spacer(1, 12))  # Add space after each frequency band table
                     lines_used = lines_used + 2  # Track the number of lines used on the current page
                     first_line = True
+    
+    #Append the left-over data
     elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableStyle))
-            
-
-
+    
     # Build PDF
-
     doc.build(elements, onFirstPage=my_on_page, onLaterPages=my_on_page)
 
 def process_csv(csv_filename):
