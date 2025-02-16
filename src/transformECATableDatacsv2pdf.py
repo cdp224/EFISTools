@@ -142,17 +142,15 @@ def generate_pdf(data, output_filename):
 
     def add_bookmarks(canvas, doc):
         for bookmark, title, level in bookmarks:
-            #canvas.bookmarkPage(bookmark)
             canvas.addOutlineEntry(title, bookmark, level=level, closed=False)
 
     # Function to define the layout of each page, including the footer
     def my_fi_page(canvas, doc):
         draw_footer(canvas, doc)
-        add_bookmarks(canvas, doc)
+        add_bookmarks(canvas, doc) #just do it on the first page.
     
     def my_on_page(canvas, doc):
         draw_footer(canvas, doc)
-        
 
     doc = MyDocTemplate(output_filename, pagesize=landscape(A4),
                             leftMargin=1 * cm,
@@ -432,7 +430,7 @@ def generate_pdf(data, output_filename):
                 
                     footnote_height = max(len(foot_note_content_par.text) // 190,  foot_note_content_par.text.count('<br/>'))
                     lines_used = lines_used + footnote_height + 1.4
-                    print(lines_used)
+                    #print(lines_used)
 
                 if (lines_used  > max_lines_per_page):
 
@@ -473,7 +471,7 @@ def generate_pdf(data, output_filename):
     
     #Append the left-over data
     elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableStyle))
-    print(bookmarks)
+    
     # Build PDF
     doc.build(elements, onFirstPage=my_fi_page, onLaterPages=my_on_page)
 
@@ -538,23 +536,10 @@ def main():
         download_file('https://efis.cept.org/reports/ReportDownloader?reportid=3', input_csv)
 
     data = process_csv(input_csv)  # Replace with your CSV processing function
-
-    # Optionally manipulate data
-    if manipulate_data:
-        print("Applying data manipulations...")
-        # Add your data manipulation code here
-    
+   
     # Generate the PDF
     print(f"Generating PDF: {output_pdf}")
     generate_pdf(data, output_pdf)
-
-    #input_csv = 'ECA_Table.csv'  # Replace with your CSV file path
-    #output_pdf = 'ECA_Table.pdf'
-    
-    # Process the CSV and generate the PDF
-    #data = process_csv(input_csv)
-    #generate_pdf(data, output_pdf)
-
 
 if __name__ == "__main__":
     main()
