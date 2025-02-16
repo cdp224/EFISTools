@@ -144,48 +144,12 @@ def generate_pdf(data, output_filename):
     # Function to define the layout of each page, including the footer
     def my_on_page(canvas, doc):
         draw_footer(canvas, doc)
-        #canvas.restoreState()
-
-    def add_bookmarks(canvas, doc):
-        """Callback function to insert bookmarks at the right positions."""
-        for chapter, sub_bookmarks in bookmarks.items():
-            chapter_id = chapter.replace(" ", "_")  # Safe bookmark name
-            canvas.bookmarkPage(chapter_id)  # Bookmark the chapter start
-            canvas.addOutlineEntry(chapter, chapter_id, level=0, closed=True)  # Root-level bookmark
-            
-            # Add nested bookmarks (frequency bands, etc.)
-            for bookmark_name, title in sub_bookmarks:
-                canvas.bookmarkPage(bookmark_name)
-                canvas.addOutlineEntry(title, bookmark_name, level=1)  # Nested under chapter
-
-
 
     doc = MyDocTemplate(output_filename, pagesize=landscape(A4),
                             leftMargin=1 * cm,
                             rightMargin=1 * cm,
                             topMargin=1 * cm,
                             bottomMargin=1 * cm)
-    bookmarks = {
-        "ECA Table": [],
-        "ECA Footnotes": [],  # Example additional chapter
-        "RR Footnotes": [],  # Example additional chapter
-        "CEPT Deliverables": [],  # Example additional chapter
-        "European Standards": [],  # Example additional chapter
-        "Receive only European Standards": [],  # Example additional chapter
-        "Abbreviations": [],  # Example additional chapter
-    }
-
-#    doc = SimpleDocTemplate(output_filename, 
-#                            pagesize=landscape(A4),
-#                            leftMargin=1 * cm,
-#                            rightMargin=1 * cm,
-#                            topMargin=1 * cm,
-#                            bottomMargin=1 * cm)
-    
-    
-    # Define a PageTemplate using the Frame and draw_footer function
-    #template = PageTemplate(id='custom-template', frames=[frame], onPageEnd=draw_footer)
-    #doc.addPageTemplates([template])
 
     elements = []
 
@@ -223,14 +187,33 @@ def generate_pdf(data, output_filename):
         fontWeight='bold',
     )
 
+    ECATableHeaderStyle = TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
+        ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
+        ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
+    ])
 
+    InfoTableHeaderStyle=TableStyle([
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
+                    ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
+                    #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
+                    #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
+                ])
+    InfoTableStyle=TableStyle([
+                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
+                        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
+                    ])
     # Table headings
     table_headers = ["RR Region 1", "European Common Allocations", "Application", "CEPT Deliverables", "Standard", "Note"]
     col_widths = [150, 150, 152, 92, 58, 180]  # Adjust based on content
 
     FN_table_headers = ["Footnote Number", "Footnote Content"]
     FN_col_widths = [100, 50+150+152+92+58+180]  # Adjust based on content
-
 
     current_band = None
     table_data = []  # Initialize the table_data list before the loop
@@ -239,14 +222,7 @@ def generate_pdf(data, output_filename):
     
     # draw the initial first table header
     table_data = [table_headers]
-    elements.append(Table(table_data, colWidths=col_widths, style=TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-        ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-        ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
-    ])))
+    elements.append(Table(table_data, colWidths=col_widths, style=ECATableHeaderStyle))
     elements.append(Spacer(1, 12))  # Add space after each frequency band table
     lines_used = 2  # Track the number of lines used on the current page
 
@@ -257,13 +233,14 @@ def generate_pdf(data, output_filename):
     
     inECAtable = True
     inECAFootnoteTable = False
-    docType = "CEPT"
+    docType = "ECATable"
 
     for index, row in data.iterrows():
         
         #Footnote Part of csv reached
         if (row['Upper Frequency']=="footnotetext"):
             inECAtable = False
+            docType = "ECANotes"
             print("footnotes start")
 
         if inECAtable:
@@ -282,14 +259,7 @@ def generate_pdf(data, output_filename):
                     if lines_used + lines_for_table > max_lines_per_page:
                         elements.append(PageBreak())
                         table_head_data = [table_headers]
-                        elements.append(Table(table_head_data, colWidths=col_widths, style=TableStyle([
-                            ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                            ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
-                            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-                            ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                            ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
-                            ])))
+                        elements.append(Table(table_head_data, colWidths=col_widths, style=ECATableHeaderStyle))
 
                         elements.append(Spacer(1, 12))  # Add space after each frequency band table
                         lines_used = 2  # Track the number of lines used on the current page
@@ -348,7 +318,6 @@ def generate_pdf(data, output_filename):
             commas_for_row = max(standard.text.count(','), cept_doc.text.count(','), len(notes.text) // 40) # estimate the hight of the line. Check the number of comas, cehck the length of the note.
             comas_for_table = comas_for_table+commas_for_row
         elif (inECAtable == False and inECAFootnoteTable == False):
-            print("mach de header")
             inECAFootnoteTable = True
             # Add the last table for the remaining data
             if table_data:
@@ -360,14 +329,7 @@ def generate_pdf(data, output_filename):
                 if lines_used + lines_for_table > max_lines_per_page:
                     elements.append(PageBreak())
                     table_head_data = [table_headers]
-                    elements.append(Table(table_head_data, colWidths=col_widths, style=TableStyle([
-                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
-                        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-                        ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                        ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
-                    ])))
+                    elements.append(Table(table_head_data, colWidths=col_widths, style=ECATableHeaderStyle))
                     elements.append(Spacer(1, 12))  # Add space after each frequency band table
                     lines_used = 2  # Track the number of lines used on the current page
             
@@ -378,13 +340,13 @@ def generate_pdf(data, output_filename):
                 elements.append(paragraph)
                 #elements.append(Paragraph(current_band, band_style))
                 elements.append(Table(table_data, colWidths=col_widths, style=TableStyle([
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                    ('SPAN', (0, 0), (0, len(table_data) - 1)),  # Merge RR Region 1 cells
-                    ('SPAN', (1, 0), (1, len(table_data) - 1)),  # Merge CEPT Allocation cells
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                    ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
-                ])))
+                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
+                        ('SPAN', (0, 0), (0, len(table_data) - 1)),  # Merge RR Region 1 cells
+                        ('SPAN', (1, 0), (1, len(table_data) - 1)),  # Merge CEPT Allocation cells
+                        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
+                        ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
+                        ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
+                    ])))
 
                 #new page: now the footnotes start:
                 elements.append(PageBreak())
@@ -394,14 +356,7 @@ def generate_pdf(data, output_filename):
                 paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
                 elements.append(paragraph)
                 table_data = [FN_table_headers]
-                elements.append(Table(table_data, colWidths=FN_col_widths, style=TableStyle([
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                    ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-                    #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                    #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
-                ])))
+                elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableHeaderStyle))
                 elements.append(Spacer(1, 12))  # Add space after each frequency band table
                 lines_used = 4  # Track the number of lines used on the current page
                 #elements.append(paragraph)
@@ -409,7 +364,6 @@ def generate_pdf(data, output_filename):
                 #elements.append(Spacer(1, 12))  # Add space after each frequency band table
                 #table_data=[]
         elif (inECAFootnoteTable):
-                print("mach footnotes " + docType)
                 if (row['Upper Frequency']=="title" and docType=="ETSI"):
                     print("ETSI what start")
                     docType = "ETSIwhat"
@@ -456,13 +410,8 @@ def generate_pdf(data, output_filename):
                     print(lines_used)
 
                 if (lines_used  > max_lines_per_page):
-                    print("grösser")
-                    print("lines_used: "+ str(lines_used))
-                    elements.append(Table(table_data, colWidths=FN_col_widths, style=TableStyle([
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    ])))
-                
+
+                    elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableStyle))
                     #add the table and make a new page.
                     elements.append(PageBreak())
 
@@ -487,20 +436,14 @@ def generate_pdf(data, output_filename):
                         elements.append(paragraph) # add title
                     else:
                         lines_used = 0
-                    #paragraph = Paragraph("Footnotes", band_style)
-                    #paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
-                    # draw the initial first table header
+
                     table_data = [FN_table_headers]
-                    elements.append(Table(table_data, colWidths=FN_col_widths, style=TableStyle([
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                    ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-                    ])))
+                    elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableHeaderStyle))
                     elements.append(Spacer(1, 12))  # Add space after each frequency band table
                     lines_used = lines_used + 2  # Track the number of lines used on the current page
                     first_line = True
-                
+    elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableStyle))
+            
 
 
     # Build PDF
