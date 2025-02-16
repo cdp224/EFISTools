@@ -106,7 +106,6 @@ def wrap_service_data_info(in_string):
 def wrap_deliverables_info(in_string, docdict):
     test_str = in_string
     remaining_str = test_str
-    servicedata_info = ""
     servicedata_info_out = ""
     deliverable=""
     line_char_count = 0
@@ -129,14 +128,13 @@ def wrap_deliverables_info(in_string, docdict):
                 kill_next_char = True
             else:
                 deliverable = deliverable + nc
-            servicedata_info=servicedata_info + nc
         else:
             kill_next_char = False
     urldoc=docdict.get(deliverable)
     servicedata_info_out = servicedata_info_out + f'<link href="{urldoc}">{deliverable}</link>'    
     return servicedata_info_out
 
-def generate_pdf(data, docdict, output_filename):
+def generate_pdf(data, docdict, hamrstandsdict, output_filename):
 
     def draw_footer(canvas, doc):
         canvas.saveState()
@@ -336,7 +334,7 @@ def generate_pdf(data, docdict, output_filename):
 
             app_info = Paragraph(row['Applications'], common_style)
             cept_doc = Paragraph(wrap_deliverables_info(row['ECC/ERC Harmonisation Measure'], docdict), common_style)
-            standard = Paragraph(row['Standard'], common_style)  # Wrap text in the "Standard" column
+            standard = Paragraph(wrap_deliverables_info(row['Standard'], hamrstandsdict), common_style)  # Wrap text in the "Standard" column
             notes = Paragraph(row['Notes'], common_style)  # Wrap text in the "Notes" column
 
             # Append the current row data
@@ -431,6 +429,14 @@ def generate_pdf(data, docdict, output_filename):
                 foot_note_number = row['Lower Frequency'] 
                 foot_note_content = row['Upper Frequency']
                 #print(foot_note_content)
+                if (docType=="CEPT"):
+                    urldoc=docdict.get(foot_note_number)
+                    foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
+
+                if (docType=="ETSI"):
+                    urldoc=hamrstandsdict.get(foot_note_number)
+                    foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
+
                 foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
                 foot_note_content_par = Paragraph(f"{foot_note_content}", common_style) #attach the footnotes
                 
@@ -539,7 +545,23 @@ def create_docdb_dict(input_db_csv_file):
                 decision_dict[decision_id] = pdf_url[0]
 
     return decision_dict
-    
+
+def create_hamrstands_dict(input_db_csv_file):
+    decision_dict = {}
+
+    # Open the CSV file
+    with open(input_db_csv_file, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')  # Read CSV with headers
+        print(reader)
+        for row in reader:
+            decision_id = row['Harmonised Standard']  # Assuming "Title" contains the ECC/DEC ID
+            pdf_url = row['link']  # The URL for the PDF document
+            pdf_url = re.findall(r'http[^",]+', pdf_url)
+            if pdf_url:
+                decision_dict[decision_id] = pdf_url[0]
+
+    return decision_dict
+
 
 # Argument parsing setup
 def parse_arguments():
@@ -574,6 +596,14 @@ def main():
 
     docdict = create_docdb_dict(input_db_csv)
 
+    input_harmstand_csv ="LATEST"
+    print(f"Read Document Database: {input_harmstand_csv}")
+    if (input_harmstand_csv=='LATEST'):
+        input_harmstand_csv = os.path.join('.', 'LATEST_hEN.csv')
+        download_file('https://docdb.cept.org/frequencies/export', input_harmstand_csv)
+
+    hamrstandsdict = create_hamrstands_dict(input_harmstand_csv)
+
     print(docdict)
 
     # Process input data
@@ -586,7 +616,7 @@ def main():
    
     # Generate the PDF
     print(f"Generating PDF: {output_pdf}")
-    generate_pdf(data, docdict, output_pdf)
+    generate_pdf(data, docdict, hamrstandsdict, output_pdf)
 
 if __name__ == "__main__":
     main()
