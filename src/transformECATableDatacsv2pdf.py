@@ -27,7 +27,7 @@ class MyDocTemplate(SimpleDocTemplate):
         """Capture the location of flowable for bookmarks."""
         if isinstance(flowable, Paragraph) and hasattr(flowable, '_bookmark'):
             self.canv.bookmarkPage(flowable._bookmark)  # Mark the page for the bookmark
-            self.canv.addOutlineEntry(flowable.text, flowable._bookmark, level=0)  # Add to outline
+            #self.canv.addOutlineEntry(flowable.text, flowable._bookmark, level=0)  # Add to outline
 
 def estimate_string_length(s):
     capital_letters=sum(1 for char in s if char.isupper())
@@ -132,7 +132,7 @@ def generate_pdf(data, output_filename):
         # Set font for the footer text
         canvas.setFont("Arial", 9)
     
-        # Footer text (you can customize this)
+        # Footer text
         footer_text = f"Page {doc.page}"
     
         # Draw the footer text at the bottom right of the page
@@ -140,10 +140,19 @@ def generate_pdf(data, output_filename):
     
         canvas.restoreState()
 
+    def add_bookmarks(canvas, doc):
+        for bookmark, title, level in bookmarks:
+            #canvas.bookmarkPage(bookmark)
+            canvas.addOutlineEntry(title, bookmark, level=level, closed=False)
 
     # Function to define the layout of each page, including the footer
+    def my_fi_page(canvas, doc):
+        draw_footer(canvas, doc)
+        add_bookmarks(canvas, doc)
+    
     def my_on_page(canvas, doc):
         draw_footer(canvas, doc)
+        
 
     doc = MyDocTemplate(output_filename, pagesize=landscape(A4),
                             leftMargin=1 * cm,
@@ -152,6 +161,9 @@ def generate_pdf(data, output_filename):
                             bottomMargin=1 * cm)
 
     elements = []
+    
+    bookmarks = []
+
 
     # Define a common style for all cells
     common_style = ParagraphStyle(
@@ -222,11 +234,13 @@ def generate_pdf(data, output_filename):
     max_lines_per_page = 44  # Adjust based on the content and font size
     
     #Title
-    bookmark_name = f"ECA Table"
-    paragraph = Paragraph("ECA Table", title_style)
-    paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
+    chapter="ECA Table"
+    chapter_bookmark_name = f"chapter_{chapter.replace(' ', '_')}"
+    paragraph = Paragraph(chapter, title_style)
     elements.append(paragraph) # add title
-
+    elements[-1]._bookmark = chapter_bookmark_name
+    bookmarks.append((chapter_bookmark_name, chapter, 0))
+    
 
     # draw the initial first table header
     table_data = [table_headers]
@@ -274,11 +288,12 @@ def generate_pdf(data, output_filename):
         
                     # Add the table and update lines used
                     # Add a bookmark for the current frequency band
-                    bookmark_name = f"band_{current_band.replace(' ', '_').replace('-', '_')}"
+                    bookmark_name = f"{chapter_bookmark_name}_band_{current_band.replace(' ', '_')}"
                     paragraph = Paragraph(current_band, band_style)
-                    paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
                     elements.append(paragraph)
-
+                    elements[-1]._bookmark = bookmark_name
+                    bookmarks.append((bookmark_name, current_band, 1))
+                    
                     elements.append(Table(table_data, colWidths=col_widths, style=TableStyle([
                         ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
                         ('SPAN', (0, 0), (0, len(table_data) - 1)),  # Merge RR Region 1 cells
@@ -359,10 +374,14 @@ def generate_pdf(data, output_filename):
                 #new page: now the footnotes start:
                 elements.append(PageBreak())
                 # draw the initial first table header
-                bookmark_name = f"ECA Footnotes"
-                paragraph = Paragraph("ECA Footnotes", title_style)
-                paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
-                elements.append(paragraph)
+
+                chapter="ECA Footnotes"
+                chapter_bookmark_name = f"chapter_{chapter.replace(' ', '_')}"
+                paragraph = Paragraph(chapter, title_style)
+                elements.append(paragraph) # add title
+                elements[-1]._bookmark = chapter_bookmark_name
+                bookmarks.append((chapter_bookmark_name, chapter, 0))
+
                 table_data = [FN_table_headers]
                 elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableHeaderStyle))
                 elements.append(Spacer(1, 12))  # Add space after each frequency band table
@@ -424,22 +443,25 @@ def generate_pdf(data, output_filename):
                     if lines_used == 100: #insert new title
                         lines_used = 2
                         if docType=="RR":
-                            bookmark_name = f"Radio Regulations Footnotes"
+                            chapter = "Radio Regulations Footnotes"
                             paragraph = Paragraph("Radio Regulations Footnotes", title_style)
                         elif docType=="CEPT":
-                            bookmark_name = f"CEPT Deliverables"
+                            chapter = "CEPT Deliverables"
                             paragraph = Paragraph("CEPT Deliverables", title_style)
                         elif docType=="ETSI":
-                            bookmark_name = f"European Standards"
+                            chapter = "European Standards"
                             paragraph = Paragraph("European Standards", title_style)
                         elif docType=="ETSIwhat":
-                            bookmark_name = f"Receive only European Standards"
+                            chapter = "Receive only European Standards"
                             paragraph = Paragraph("Receive only European Standards", title_style)
                         elif docType=="Abbreviations":
-                            bookmark_name = f"Abbreviations"
+                            chapter = "Abbreviations"
                             paragraph = Paragraph("Abbreviations", title_style)
-                        paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
+                        chapter_bookmark_name = f"chapter_{chapter.replace(' ', '_')}"
+                        paragraph = Paragraph(chapter, title_style)
                         elements.append(paragraph) # add title
+                        elements[-1]._bookmark = chapter_bookmark_name
+                        bookmarks.append((chapter_bookmark_name, chapter, 0))
                     else:
                         lines_used = 0
 
@@ -451,9 +473,9 @@ def generate_pdf(data, output_filename):
     
     #Append the left-over data
     elements.append(Table(table_data, colWidths=FN_col_widths, style=InfoTableStyle))
-    
+    print(bookmarks)
     # Build PDF
-    doc.build(elements, onFirstPage=my_on_page, onLaterPages=my_on_page)
+    doc.build(elements, onFirstPage=my_fi_page, onLaterPages=my_on_page)
 
 def process_csv(csv_filename):
     # Read the CSV file without any changes to the row order
