@@ -355,10 +355,13 @@ def generate_pdf(data, output_filename):
                     lines_used = 2  # Track the number of lines used on the current page
             
                 # Add the table and update lines used
-                bookmark_name = f"band_{current_band.replace(' ', '_').replace('-', '_')}"
+                bookmark_name = f"{chapter_bookmark_name}_band_{current_band.replace(' ', '_')}"
                 paragraph = Paragraph(current_band, band_style)
-                paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
                 elements.append(paragraph)
+                elements[-1]._bookmark = bookmark_name
+                bookmarks.append((bookmark_name, current_band, 1))
+                    
+                
                 #elements.append(Paragraph(current_band, band_style))
                 elements.append(Table(table_data, colWidths=col_widths, style=TableStyle([
                         ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
