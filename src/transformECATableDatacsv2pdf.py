@@ -145,12 +145,35 @@ def generate_pdf(data, output_filename):
     def my_on_page(canvas, doc):
         draw_footer(canvas, doc)
         #canvas.restoreState()
+
+    def add_bookmarks(canvas, doc):
+        """Callback function to insert bookmarks at the right positions."""
+        for chapter, sub_bookmarks in bookmarks.items():
+            chapter_id = chapter.replace(" ", "_")  # Safe bookmark name
+            canvas.bookmarkPage(chapter_id)  # Bookmark the chapter start
+            canvas.addOutlineEntry(chapter, chapter_id, level=0, closed=True)  # Root-level bookmark
+            
+            # Add nested bookmarks (frequency bands, etc.)
+            for bookmark_name, title in sub_bookmarks:
+                canvas.bookmarkPage(bookmark_name)
+                canvas.addOutlineEntry(title, bookmark_name, level=1)  # Nested under chapter
+
+
+
     doc = MyDocTemplate(output_filename, pagesize=landscape(A4),
                             leftMargin=1 * cm,
                             rightMargin=1 * cm,
                             topMargin=1 * cm,
                             bottomMargin=1 * cm)
-    
+    bookmarks = {
+        "ECA Table": [],
+        "ECA Footnotes": [],  # Example additional chapter
+        "RR Footnotes": [],  # Example additional chapter
+        "CEPT Deliverables": [],  # Example additional chapter
+        "European Standards": [],  # Example additional chapter
+        "Receive only European Standards": [],  # Example additional chapter
+        "Abbreviations": [],  # Example additional chapter
+    }
 
 #    doc = SimpleDocTemplate(output_filename, 
 #                            pagesize=landscape(A4),
@@ -188,6 +211,19 @@ def generate_pdf(data, output_filename):
         fontWeight='bold',
     )
 
+    # Define the style for the frequency band range cell
+    title_style = ParagraphStyle(
+        name="TitleStyle",
+        fontName="Arial",
+        fontSize=16,
+        leading=18,
+        alignment=TA_LEFT,
+        spaceAfter=6,
+        textColor=colors.black,
+        fontWeight='bold',
+    )
+
+
     # Table headings
     table_headers = ["RR Region 1", "European Common Allocations", "Application", "CEPT Deliverables", "Standard", "Note"]
     col_widths = [150, 150, 152, 92, 58, 180]  # Adjust based on content
@@ -221,7 +257,7 @@ def generate_pdf(data, output_filename):
     
     inECAtable = True
     inECAFootnoteTable = False
-    inRRFootnoteTable = False
+    docType = "CEPT"
 
     for index, row in data.iterrows():
         
@@ -352,10 +388,11 @@ def generate_pdf(data, output_filename):
 
                 #new page: now the footnotes start:
                 elements.append(PageBreak())
-                #bookmark_name = f"Footnotes"
-                #paragraph = Paragraph("Footnotes", band_style)
-                #paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
                 # draw the initial first table header
+                bookmark_name = f"ECA Footnotes"
+                paragraph = Paragraph("ECA Footnotes", title_style)
+                paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
+                elements.append(paragraph)
                 table_data = [FN_table_headers]
                 elements.append(Table(table_data, colWidths=FN_col_widths, style=TableStyle([
                     ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
@@ -366,48 +403,90 @@ def generate_pdf(data, output_filename):
                     #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
                 ])))
                 elements.append(Spacer(1, 12))  # Add space after each frequency band table
-                lines_used = 2  # Track the number of lines used on the current page
+                lines_used = 4  # Track the number of lines used on the current page
                 #elements.append(paragraph)
                 first_line = True
                 #elements.append(Spacer(1, 12))  # Add space after each frequency band table
                 #table_data=[]
         elif (inECAFootnoteTable):
-                print("mach footnotes")
+                print("mach footnotes " + docType)
+                if (row['Upper Frequency']=="title" and docType=="ETSI"):
+                    print("ETSI what start")
+                    docType = "ETSIwhat"
+                    FN_table_headers = ["Document", "Description"]
+                    lines_used = 100 #trigger a new page. 
+                if (row['Upper Frequency']=="title" and docType=="CEPT"):
+                    print("ETSI start")
+                    docType = "ETSI"
+                    FN_table_headers = ["Document", "Description"]
+                    lines_used = 100 #trigger a new page. 
+                if (row['Upper Frequency']=="title" and docType=="RR"):
+                    print("CEPT start")
+                    docType = "CEPT"
+                    FN_table_headers = ["Document", "Description"]
+                    lines_used = 100 #trigger a new page.
+                if (row['Upper Frequency']=="footnotetext"):
+                    inECAtable = False
+                    print("RR footnotes start")
+                    docType = "RR"
+                    lines_used = 100 #trigger a new page.
+                if (row['Upper Frequency']=="description"):
+                    print("abbreviation start")
+                    FN_table_headers = ["Abbreviation", "Description"]
+                    docType = "Abbreviations"
+                    lines_used = 100 #trigger a new page.
+
                 foot_note_number = row['Lower Frequency'] 
                 foot_note_content = row['Upper Frequency']
-                print(foot_note_content)
-                bookmark_name = foot_note_number
-                #foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
-                #foot_note_number_par._bookmark = bookmark_name
-
+                #print(foot_note_content)
+                foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
                 foot_note_content_par = Paragraph(f"{foot_note_content}", common_style) #attach the footnotes
                 
-                if first_line:
-                    table_first_line = [foot_note_number_par, foot_note_content_par]
-                    table_data = [table_first_line]  # Reset the table data with the headers
-                    #table_data.append([service_info, cept_info, app_info, cept_doc, standard, notes])
-                    first_line = False
-                else:
-                    table_data.append([foot_note_number_par, foot_note_content_par])
+                if lines_used < 100: #ignore line.
+                    if first_line:
+                        table_first_line = [foot_note_number_par, foot_note_content_par]
+                        table_data = [table_first_line]  # Reset the table data with the headers
+                        #table_data.append([service_info, cept_info, app_info, cept_doc, standard, notes])
+                        first_line = False
+                    else:
+                        table_data.append([foot_note_number_par, foot_note_content_par])
                 
-                footnote_height = max(len(foot_note_content_par.text) // 190,  foot_note_content_par.text.count('<br/>'))
-                lines_used = lines_used + footnote_height + 1.4
-                print(lines_used)
+                    footnote_height = max(len(foot_note_content_par.text) // 190,  foot_note_content_par.text.count('<br/>'))
+                    lines_used = lines_used + footnote_height + 1.4
+                    print(lines_used)
 
                 if (lines_used  > max_lines_per_page):
                     print("grösser")
                     print("lines_used: "+ str(lines_used))
                     elements.append(Table(table_data, colWidths=FN_col_widths, style=TableStyle([
                     ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                    #('SPAN', (0, 0), (0, len(table_data) - 1)),  # Merge RR Region 1 cells
-                    #('SPAN', (1, 0), (1, len(table_data) - 1)),  # Merge CEPT Allocation cells
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                    #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
                     ])))
                 
                     #add the table and make a new page.
                     elements.append(PageBreak())
+
+                    if lines_used == 100: #insert new title
+                        lines_used = 2
+                        if docType=="RR":
+                            bookmark_name = f"Radio Regulations Footnotes"
+                            paragraph = Paragraph("Radio Regulations Footnotes", title_style)
+                        elif docType=="CEPT":
+                            bookmark_name = f"CEPT Deliverables"
+                            paragraph = Paragraph("CEPT Deliverables", title_style)
+                        elif docType=="ETSI":
+                            bookmark_name = f"European Standards"
+                            paragraph = Paragraph("European Standards", title_style)
+                        elif docType=="ETSIwhat":
+                            bookmark_name = f"Receive only European Standards"
+                            paragraph = Paragraph("Receive only European Standards", title_style)
+                        elif docType=="Abbreviations":
+                            bookmark_name = f"Abbreviations"
+                            paragraph = Paragraph("Abbreviations", title_style)
+                        paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
+                        elements.append(paragraph) # add title
+                    else:
+                        lines_used = 0
                     #paragraph = Paragraph("Footnotes", band_style)
                     #paragraph._bookmark = bookmark_name  # Assign a bookmark name to the Paragraph
                     # draw the initial first table header
@@ -417,11 +496,9 @@ def generate_pdf(data, output_filename):
                     ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
                     ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
-                    #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
-                    #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
                     ])))
                     elements.append(Spacer(1, 12))  # Add space after each frequency band table
-                    lines_used = 2  # Track the number of lines used on the current page
+                    lines_used = lines_used + 2  # Track the number of lines used on the current page
                     first_line = True
                 
 
@@ -505,8 +582,8 @@ def main():
     #output_pdf = 'ECA_Table.pdf'
     
     # Process the CSV and generate the PDF
-    data = process_csv(input_csv)
-    generate_pdf(data, output_pdf)
+    #data = process_csv(input_csv)
+    #generate_pdf(data, output_pdf)
 
 
 if __name__ == "__main__":
