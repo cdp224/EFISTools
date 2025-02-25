@@ -431,11 +431,17 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                 #print(foot_note_content)
                 if (docType=="CEPT"):
                     urldoc=docdict.get(foot_note_number)
-                    foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
+                    if (str(urldoc)=="None"):
+                        print("---------No URL found for " + foot_note_number + "    url: " + str(urldoc))
+                    else:
+                        foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
 
-                if (docType=="ETSI"):
+                if (docType=="ETSI" or docType=="ETSIwhat"):
                     urldoc=hamrstandsdict.get(foot_note_number)
-                    foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
+                    if (str(urldoc)=="None"):
+                        print("---------No URL found for " + foot_note_number + "    url: " + str(urldoc))
+                    else:
+                        foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
 
                 foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
                 foot_note_content_par = Paragraph(f"{foot_note_content}", common_style) #attach the footnotes
@@ -471,8 +477,8 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                             chapter = "European Standards"
                             paragraph = Paragraph("European Standards", title_style)
                         elif docType=="ETSIwhat":
-                            chapter = "Receive only European Standards"
-                            paragraph = Paragraph("Receive only European Standards", title_style)
+                            chapter = "European Standards for Receive-Only Equipment"
+                            paragraph = Paragraph("European Standards for Receive-Only Equipment", title_style)
                         elif docType=="Abbreviations":
                             chapter = "Abbreviations"
                             paragraph = Paragraph("Abbreviations", title_style)
