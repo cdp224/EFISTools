@@ -13,12 +13,19 @@ Download and install python from https://www.python.org/
 
 Open a command window and navigate into the repo top directory.
 
-`C:\Temp>C:\Users\david\AppData\Local\Programs\Python\Python312\python -m venv venv`
-`C:\Temp>cd venv`
-`C:\Temp\venc>Scripts\activate`
-`(venv) C:\Temp\venv>pip install -r ..\requirements.txt `
+```shell
+C:\Temp>C:\Users\david\AppData\Local\Programs\Python\Python312\python -m venv venv
+C:\Temp>cd venv
+C:\Temp\venv>Scripts\activate
+(venv) C:\Temp\venv>pip install -r ..\requirements.txt 
+```
+Now, all required libraries should have been installed.
 
-## transformECATableDatacsv2pdf.py
+## Generate ECA Table PDF
+
+The script `transformECATableDatacsv2pdf.py` allows to generate pdf file from the raw csv files from ECO.
+
+
 
 ### Provide Script and data:
 
@@ -31,9 +38,12 @@ into the ECATable folder and rename the file to
 
 (venv) C:\Temp\ECATable>python ECATable_EFIS59.py
 
-### NOTES:
+### NOTES and TODOs
 
-- Missing:
-  - Appendix with (linked) footnotes RR and ECA
-  - Clickable Links to the CEPT Deliverables online
-  - …
+- TODO:
+  - [x] Appendix with footnotes RR and ECA
+  - [x] Appendix with abbreviations
+  - [x] Clickable Links to the CEPT Deliverables online
+  - [ ] Include parameters for all input files
+  - [ ] Linking footnotes
+  - [ ] Linking abbreviations

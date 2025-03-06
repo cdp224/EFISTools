@@ -14,9 +14,13 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen.canvas import Canvas
 import argparse
+from datetime import datetime
 
 # Register Arial font
 pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
+
+# Define the Timestamp
+timestamp = datetime.now()
 
 class MyDocTemplate(SimpleDocTemplate):
     """Custom SimpleDocTemplate to manage bookmarks and table of contents."""
@@ -142,12 +146,20 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
         # Set font for the footer text
         canvas.setFont("Arial", 9)
     
-        # Footer text
-        footer_text = f"Page {doc.page}"
+        # Footer text right
+        footer_text_right = f"Page {doc.page}"
     
         # Draw the footer text at the bottom right of the page
-        canvas.drawRightString(doc.width + doc.leftMargin, 1 * cm, footer_text)
+        canvas.drawRightString(doc.width + doc.leftMargin, 1 * cm, footer_text_right)
+
+        # Footer text right
+        footer_text_right = f"Generated:  " + timestamp.strftime("%Y %m.%d. %H:%M.%S")
     
+        # Draw the footer text at the bottom left of the page
+        # canvas.drawRightString(doc.rightMargin, 1 * cm, footer_text_right)
+        canvas.drawString(doc.rightMargin, 1 * cm, footer_text_right)
+
+
         canvas.restoreState()
 
     def add_bookmarks(canvas, doc):
@@ -322,12 +334,17 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                 #table_data = [table_headers]  # Reset the table data with the headers
 
             # Prepare row data for the table
-            footnote_info = row['RR Region 1 Footnotes'].replace(",", "")
+            #footnote_info = row['RR Region 1 Footnotes'].replace(",", "")
+            footnote_info = row['RR Region 1 Footnotes']
+            footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
+
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
             servicedata_info = wrap_service_data_info(servicedata_info) #wrap the service data
             service_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style) #attach the footnotes
 
-            footnote_info = row['ECA Footnotes'].replace(",", "")
+            #footnote_info = row['ECA Footnotes'].replace(",", "")
+            footnote_info = row['ECA Footnotes']
+            footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
             servicedata_info = row['European Common Allocation'].replace("(", " (")
             servicedata_info = wrap_service_data_info(servicedata_info) #wrap the service data
             cept_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style)
@@ -415,7 +432,7 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                     docType = "CEPT"
                     FN_table_headers = ["Document", "Description"]
                     lines_used = 100 #trigger a new page.
-                if (row['Upper Frequency']=="footnotetext"):
+                if (row['Upper Frequency']=="footnotetext"):  # ECA footnotes
                     inECAtable = False
                     print("RR footnotes start")
                     docType = "RR"
@@ -425,9 +442,12 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                     FN_table_headers = ["Abbreviation", "Description"]
                     docType = "Abbreviations"
                     lines_used = 100 #trigger a new page.
-
-                foot_note_number = row['Lower Frequency'] 
+                # <a name='LTE'/>LTE
+                #foot_note_number = "<a name='" +row['Lower Frequency']+"'/>"+ row['Lower Frequency']
+                foot_note_number = row['Lower Frequency']
                 foot_note_content = row['Upper Frequency']
+                if (docType=="ECANotes" or docType=="RR"):
+                    foot_note_number = "<a name='" +row['Lower Frequency']+"'/>"+ row['Lower Frequency']
                 #print(foot_note_content)
                 if (docType=="CEPT"):
                     urldoc=docdict.get(foot_note_number)
@@ -576,11 +596,18 @@ def parse_arguments():
     # Optional argument to control data manipulations
     parser.add_argument('--manipulate-data', action='store_true', help="Flag to control data manipulations. Default is False.")
 
-    # Argument for input CSV file
-    parser.add_argument('--input-csv', type=str, required=True, help="Path to the input CSV file. LATEST to get the latest from ECO")
+    # Argument for input CSV ECA data file
+    parser.add_argument('--input-ECA-csv', type=str, default='LATEST', help="Path to the input CSV ECA table data file. LATEST to get the latest from ECO")
+
+    # Argument for input CSV Harmonized Standards file
+    parser.add_argument('--input-HarmStand-csv', type=str, default='LATEST', help="Path to the input CSV harmonized standards data file. LATEST to get the latest from ECO")
+
+    # Argument for input CSV CEPT Docs file
+    parser.add_argument('--input-CEPTDocs-csv', type=str, default='LATEST', help="Path to the input CSV CEPT documents data file. LATEST to get the latest from ECO")
 
     # Argument for output PDF file
-    parser.add_argument('--output-pdf', type=str, default='../output/output.pdf', help="Path to the output PDF file. Default is 'output.pdf'.")
+
+    parser.add_argument('--output-pdf', type=str, default='../output/'+timestamp.strftime("%Y%m%d_%H%M%S")+'_output.pdf', help="Path to the output PDF file. Default is '_output.pdf'.")
 
     # Parse the arguments and return them
     return parser.parse_args()
@@ -590,11 +617,11 @@ def main():
     args = parse_arguments()
 
     # Accessing the parsed arguments
-    input_csv = args.input_csv
+    input_csv = args.input_ECA_csv
     output_pdf = args.output_pdf
     manipulate_data = args.manipulate_data
 
-    input_db_csv ="LATEST"
+    input_db_csv = args.input_CEPTDocs_csv
     print(f"Read Document Database: {input_db_csv}")
     if (input_db_csv=='LATEST'):
         input_db_csv = os.path.join('.', 'LATEST_docDB.csv')
@@ -602,7 +629,7 @@ def main():
 
     docdict = create_docdb_dict(input_db_csv)
 
-    input_harmstand_csv ="LATEST"
+    input_harmstand_csv = args.input_HarmStand_csv
     print(f"Read Document Database: {input_harmstand_csv}")
     if (input_harmstand_csv=='LATEST'):
         input_harmstand_csv = os.path.join('.', 'LATEST_hEN.csv')
