@@ -67,13 +67,14 @@ def find_space_or_hyphen(s):
 #according to the french ordering. Proposal: make a lookup table that stores the
 #services and the position in ordering according to the french way. Extract these numbers
 #according to the services at hand and to the reordering accordingly.
-def wrap_service_data_info(in_string):
+def wrap_service_data_info(in_string, footnotesdict):
     in_bracket = False
     test_str = in_string
     remaining_str = test_str
     servicedata_info = ""
     line_char_count = 0
     kill_next_char = False
+    foot_note = ""
     for i in test_str:
         remaining_str = remaining_str[1:]
         if kill_next_char == False:
@@ -81,14 +82,47 @@ def wrap_service_data_info(in_string):
             if nc.isupper():
                 line_char_count = line_char_count + 1
             else:
-                line_char_count = line_char_count + 0.7
-            if i == '(':
-                in_bracket = True
-            if i == ')':
-                in_bracket = False
+                line_char_count = line_char_count + 0.65
             if in_bracket == True:
+                nc=""
                 if i == ',':  #in a bracket replace the comma with void, i.e., just remove it
-                    nc=""
+                    foot_note=foot_note.strip()
+                    #print(foot_note + " = " +str(footnotesdict.get(foot_note)))
+                    if (str(footnotesdict.get(foot_note)) == "None"):
+                        print("Footnote "+ foot_note +" was not found in appendix.")
+                        footnote_info = foot_note
+                    else:
+                        footnote_info = f'<a href="#{foot_note}">{foot_note}</a> '
+                    nc=footnote_info
+                    #print("two")
+                    #print(foot_note)
+                    #print(nc)
+                    foot_note = ""
+                elif i == ')':
+                    in_bracket = False
+                    nc=foot_note + i
+                    if foot_note.strip().startswith('5.'):
+                        foot_note=foot_note.strip()
+                        #print("FootnoteID = "+foot_note)
+                        #if (foot_note == "5.118"):
+                        #    print(foot_note + " = " +str(footnotesdict.get(foot_note)))
+                        if (str(footnotesdict.get(foot_note)) == "None"):
+                            print("Footnote "+ foot_note +" was not found in appendix.")
+                            footnote_info = foot_note
+                        else:
+                            footnote_info = f'<a href="#{foot_note}">{foot_note}</a>)'
+                    
+                        #footnote_info = f'<a href="#{foot_note.strip()}">{foot_note.strip()}</a>)'
+                        #print("sole")
+                        #print(foot_note)
+                        #print(nc)
+                        nc=footnote_info
+                        foot_note = ""
+                else:
+                    foot_note=foot_note+i
+            if i == '(':
+                foot_note = ""
+                in_bracket = True
             if in_bracket == False:
                 if i == ',':  #outside a bracket replace a comma with a break; remove next (space)
                     nc="<br/>"
@@ -138,7 +172,7 @@ def wrap_deliverables_info(in_string, docdict):
     servicedata_info_out = servicedata_info_out + f'<link href="{urldoc}">{deliverable}</link>'    
     return servicedata_info_out
 
-def generate_pdf(data, docdict, hamrstandsdict, output_filename):
+def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
     def draw_footer(canvas, doc):
         canvas.saveState()
@@ -153,7 +187,7 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
         canvas.drawRightString(doc.width + doc.leftMargin, 1 * cm, footer_text_right)
 
         # Footer text right
-        footer_text_right = f"Generated:  " + timestamp.strftime("%Y %m.%d. %H:%M.%S")
+        footer_text_right = f"Report generated:  " + timestamp.strftime("%d.%m. %Y   %H:%M:%S")
     
         # Draw the footer text at the bottom left of the page
         # canvas.drawRightString(doc.rightMargin, 1 * cm, footer_text_right)
@@ -336,17 +370,32 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
             # Prepare row data for the table
             #footnote_info = row['RR Region 1 Footnotes'].replace(",", "")
             footnote_info = row['RR Region 1 Footnotes']
-            footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
+
+            #footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
+            footnote_info_temp=""
+            #print ("split it = " + footnote_info.split(",")) 
+            for word in footnote_info.split(","):
+                word = str(word).strip()
+                if word != "":
+                    if (str(footnotesdict.get(word)) == "None"):
+                        print("Footnote "+ word +" was not found in appendix.")
+                    else:
+                        word = f'<a href="#{word}">{word}</a>)'
+                    if footnote_info_temp == "":
+                        footnote_info_temp = word
+                    else:
+                        footnote_info_temp = footnote_info_temp + ", " + word
+            footnote_info = footnote_info_temp
 
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
-            servicedata_info = wrap_service_data_info(servicedata_info) #wrap the service data
+            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
             service_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style) #attach the footnotes
 
             #footnote_info = row['ECA Footnotes'].replace(",", "")
             footnote_info = row['ECA Footnotes']
             footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
             servicedata_info = row['European Common Allocation'].replace("(", " (")
-            servicedata_info = wrap_service_data_info(servicedata_info) #wrap the service data
+            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
             cept_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style)
 
             app_info = Paragraph(row['Applications'], common_style)
@@ -447,7 +496,8 @@ def generate_pdf(data, docdict, hamrstandsdict, output_filename):
                 foot_note_number = row['Lower Frequency']
                 foot_note_content = row['Upper Frequency']
                 if (docType=="ECANotes" or docType=="RR"):
-                    foot_note_number = "<a name='" +row['Lower Frequency']+"'/>"+ row['Lower Frequency']
+                    fid=str(row['Lower Frequency']).strip()
+                    foot_note_number = "<a name='" +fid+"'/>"+ fid
                 #print(foot_note_content)
                 if (docType=="CEPT"):
                     urldoc=docdict.get(foot_note_number)
@@ -578,7 +628,7 @@ def create_hamrstands_dict(input_db_csv_file):
     # Open the CSV file
     with open(input_db_csv_file, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')  # Read CSV with headers
-        print(reader)
+        #print(reader)
         for row in reader:
             decision_id = row['Harmonised Standard']  # Assuming "Title" contains the ECC/DEC ID
             pdf_url = row['link']  # The URL for the PDF document
@@ -588,15 +638,34 @@ def create_hamrstands_dict(input_db_csv_file):
 
     return decision_dict
 
+def create_footnotes_dict(input_db_csv_file):
+    footnotes_dict = {}
+
+    # Open the CSV file
+    with open(input_db_csv_file, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')  # Read CSV with headers
+        #print(reader)
+        infootnotesection = False
+        for row in reader:
+            #print(row)
+            footnote_id = row['\ufeff"Lower Frequency"']
+            footnote_txt = row['Upper Frequency']        
+            if infootnotesection == False:
+                if (footnote_txt=="footnotetext"):  # ECA footnotes
+                    infootnotesection = True
+            else:
+                if (footnote_txt=="footnotetext"):  # ECA footnotes
+                    infootnotesection = True
+                else:
+                    footnotes_dict[footnote_id] = footnote_txt
+    return footnotes_dict
 
 # Argument parsing setup
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate a frequency allocation PDF from CSV data.")
 
-    # Optional argument to control data manipulations
-    parser.add_argument('--manipulate-data', action='store_true', help="Flag to control data manipulations. Default is False.")
-
     # Argument for input CSV ECA data file
+    #parser.add_argument('--input-ECA-csv', type=str, default='fixed_LATEST_ECA.csv', help="Path to the input CSV ECA table data file. LATEST to get the latest from ECO")
     parser.add_argument('--input-ECA-csv', type=str, default='LATEST', help="Path to the input CSV ECA table data file. LATEST to get the latest from ECO")
 
     # Argument for input CSV Harmonized Standards file
@@ -606,7 +675,6 @@ def parse_arguments():
     parser.add_argument('--input-CEPTDocs-csv', type=str, default='LATEST', help="Path to the input CSV CEPT documents data file. LATEST to get the latest from ECO")
 
     # Argument for output PDF file
-
     parser.add_argument('--output-pdf', type=str, default='../output/'+timestamp.strftime("%Y%m%d_%H%M%S")+'_output.pdf', help="Path to the output PDF file. Default is '_output.pdf'.")
 
     # Parse the arguments and return them
@@ -619,7 +687,7 @@ def main():
     # Accessing the parsed arguments
     input_csv = args.input_ECA_csv
     output_pdf = args.output_pdf
-    manipulate_data = args.manipulate_data
+    #manipulate_data = args.manipulate_data
 
     input_db_csv = args.input_CEPTDocs_csv
     print(f"Read Document Database: {input_db_csv}")
@@ -637,19 +705,21 @@ def main():
 
     hamrstandsdict = create_hamrstands_dict(input_harmstand_csv)
 
-    print(docdict)
+    #print(docdict)
 
     # Process input data
     print(f"Processing input file: {input_csv}")
     if (input_csv=='LATEST'):
         input_csv = os.path.join('.', 'LATEST_ECA.csv')
         download_file('https://efis.cept.org/reports/ReportDownloader?reportid=3', input_csv)
+    
+    footnotesdict = create_footnotes_dict(input_csv)
 
     data = process_csv(input_csv)  # Replace with your CSV processing function
    
     # Generate the PDF
     print(f"Generating PDF: {output_pdf}")
-    generate_pdf(data, docdict, hamrstandsdict, output_pdf)
+    generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_pdf)
 
 if __name__ == "__main__":
     main()
