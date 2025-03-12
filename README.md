@@ -32,12 +32,11 @@ There are several paramters:
 
 - -h, --help            show this help message and exit
 - --input-ECA-csv INPUT_ECA_CSV
-                        Path to the input CSV ECA table data file. LATEST to get the latest from ECO
-                        Currently use the ´fixed_LATEST_ECA.csv´ file.
+                        Path to the input CSV ECA table data file. LATEST to get the latest from ECO.
 - --input-HarmStand-csv INPUT_HARMSTAND_CSV
-                        Path to the input CSV harmonized standards data file. LATEST to get the latest from ECO
+                        Path to the input CSV harmonized standards data file. LATEST to get the latest from ECO.
 - --input-CEPTDocs-csv INPUT_CEPTDOCS_CSV
-                        Path to the input CSV CEPT documents data file. LATEST to get the latest from ECO
+                        Path to the input CSV CEPT documents data file. LATEST to get the latest from ECO.
 - --output-pdf OUTPUT_PDF
                         Path to the output PDF file. Default is '_output.pdf'.
 

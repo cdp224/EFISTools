@@ -380,7 +380,7 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
                     if (str(footnotesdict.get(word)) == "None"):
                         print("Footnote "+ word +" was not found in appendix.")
                     else:
-                        word = f'<a href="#{word}">{word}</a>)'
+                        word = f'<a href="#{word}">{word}</a>'
                     if footnote_info_temp == "":
                         footnote_info_temp = word
                     else:

@@ -9,7 +9,7 @@ import argparse
 # Function to sanitize the title to create a valid filename
 def sanitize_filename(title):
     # Replace '/', '(', and ')' with '_'
-    return title.replace('/', '_').replace('(', '_').replace(')', '_').replace('<br>', '_')
+    return title.replace('/', '_').replace('(', '_').replace(')', '_').replace('<br>', '_').strip()
 
 # Function to create directory if it doesn't exist
 def create_directory(path):
