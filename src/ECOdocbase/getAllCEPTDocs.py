@@ -28,15 +28,39 @@ def download_file(url, file_path):
         print(f"Failed to download {url}. Error: {e}")
 
 # Main function to process the CSV file
-def process_csv(output_path, file_path, simulate):
+def process_csv():
+
+    global file_path, input_csv, output_path, simulate, active_only, get_reports, get_all, get_ec_decisions, get_ecc_decisions, get_recommendations
     with open(file_path, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file, delimiter=';')
 
         #iterate over all lines in the csv file
         for row in reader:
+
             doc_type = row['Type']
+            print ("Doc_type "+doc_type)
+            
             title = row['Title']
+            
             status = row['Status']
+            print ("Status " + status)
+            if active_only:
+                if status=="Withdrawn":
+                    continue
+            if "EC Decision" in doc_type:
+                if not get_ec_decisions: 
+                    continue
+            if "ECC Decision" in doc_type:
+                if not get_ecc_decisions: 
+                    continue
+            if "Report" in doc_type:
+                if not get_reports:
+                    continue
+            if "Recommendation" in doc_type:
+                if not get_recommendations:
+                    continue
+            
+            print("Proceed with download...")
             creation_date=row['Publish Date']
             creation_time_struct = time.strptime(creation_date, "%Y-%m-%d")  # Convert to struct_time
             creation_timestamp = time.mktime(creation_time_struct)  # Convert to seconds since epoch
@@ -84,8 +108,26 @@ def parse_arguments():
     # Argument for input CSV file
     parser.add_argument('--input-csv', type=str, required=True, help="File and path to the input CSV file. *LATEST* will download the lates file from CEPT")
 
-    # Optional argument to control data manipulations
+    # Optional argument to if we want just to simulate the downloads
     parser.add_argument('--simulate', action='store_true', help="Flag to enable the actual download or not.")
+   
+    # Optional argument to control if we only need the active documents only.
+    parser.add_argument('--active-only', action='store_true', help="Flag to control if only active documents need to be downloaded.")
+    
+    # Optional argument to control if we want to have the reports
+    parser.add_argument('--get-reports', action='store_true', help="Flag to control if reports need to be downloaded.")
+
+    # Optional argument to control if we want to have the reports
+    parser.add_argument('--get-ecc-decisions', action='store_true', help="Flag to control if ECC decisions need to be downloaded.")
+
+    # Optional argument to control if we want to have the reports
+    parser.add_argument('--get-ec-decisions', action='store_true', help="Flag to control if EC decisions need to be downloaded.")
+
+    # Optional argument to control if we want to have the reports
+    parser.add_argument('--get-recommendations', action='store_true', help="Flag to control if recommendations need to be downloaded.")
+
+    # Optional argument to control if we want to override and get all
+    parser.add_argument('--get-all', action='store_true', help="Flag to control if all (active) documents need to be downloaded.")
 
     # Parse the arguments and return them
     return parser.parse_args()
@@ -95,9 +137,30 @@ def main():
     args = parse_arguments()
 
     # Accessing the parsed arguments
+    global file_path, input_csv, output_path, simulate, active_only, get_reports, get_all, get_ecc_decisions, get_ec_decisions, get_recommendations
     input_csv = args.input_csv
     output_path = args.output_path
     simulate = args.simulate
+    active_only = args.active_only
+    get_reports = args.get_reports
+
+    get_recommendations = args.get_recommendations
+    get_ecc_decisions = args.get_ecc_decisions
+    get_ec_decisions = args.get_ec_decisions
+    get_all = args.get_all
+
+    #get_all overrides decisions
+    if get_all:
+        get_reports = True
+        get_ecc_decisions = True
+        get_ec_decisions = True
+        get_recommendations = True
+        
+    print("Get_all " + str(get_all))
+    print("Get_reports " + str(get_reports))
+    print("Get_ecc_decisions " + str(get_ecc_decisions))
+    print("Get_recommendations " + str(get_recommendations))
+    print("Get_ec_decisions " + str(get_ec_decisions))
 
     print(simulate)
 
@@ -105,8 +168,10 @@ def main():
         input_csv = os.path.join('.', 'LATEST.csv')
         download_file('https://docdb.cept.org/search/exportall', input_csv)
 
+    file_path=input_csv
+
     # Process the CSV file
-    process_csv(output_path, input_csv, simulate)
+    process_csv()
 
 if __name__ == "__main__":
     main()
