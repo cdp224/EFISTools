@@ -9,7 +9,9 @@ import argparse
 # Function to sanitize the title to create a valid filename
 def sanitize_filename(title):
     # Replace '/', '(', and ')' with '_'
-    return title.replace('/', '_').replace('(', '_').replace(')', '_').replace('<br>', '_').strip()
+    title = ' '.join(title.strip().split())
+    #return title.replace('/', '_').replace('(', '_').replace(')', '_').replace('<br>', '_').strip()
+    return title.replace('/', '_').replace('<br>', '_').strip()
 
 # Function to create directory if it doesn't exist
 def create_directory(path):
@@ -71,7 +73,10 @@ def process_csv():
                 # pdf_url = re.search(r'"(http[^"]+)"', pdf_url).group(1)
                 for i, pdf_url in enumerate(pdf_urls):            
                     # Sanitize title to create filename
+                    print("Title: " + title)
+                    
                     sanitized_title = sanitize_filename(title)
+                    print("SaniTitle: " + sanitized_title)
 
                     #only add an index in case there are more than one pdf document to be downloaded.
                     if len(pdf_urls) > 1:

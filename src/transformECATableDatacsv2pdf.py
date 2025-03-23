@@ -210,7 +210,7 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
     doc = MyDocTemplate(output_filename, pagesize=landscape(A4),
                             leftMargin=1 * cm,
-                            rightMargin=1 * cm,
+                            rightMargin=0.6 * cm,
                             topMargin=1 * cm,
                             bottomMargin=1 * cm)
 
@@ -226,8 +226,21 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
         fontSize=8,
         leading=9,
         alignment=TA_LEFT,
-        spaceAfter=-6
+        spaceAfter=-6,
+        textColor=colors.black  
     )
+    # Define a style for ECAheader (legend) cells vst,   not used. Done with Table style (ECATableHeaderStyle).
+    # Idea was to put content as Paragraph (with style) to the ECAheader.
+    legend_style = ParagraphStyle(
+        name="CommonStyle",
+        fontName="Arial",
+        fontSize=8,
+        leading=9,
+        alignment=TA_LEFT,
+        spaceAfter=-6,
+        textColor=colors.blue   #vst +
+    )
+
 
     # Define the style for the frequency band range cell
     band_style = ParagraphStyle(
@@ -237,7 +250,8 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
         leading=14,
         alignment=TA_LEFT,
         spaceAfter=-6,
-        textColor=colors.black,
+        textColor=colors.blue,
+        #vst org black
         fontWeight='bold',
     )
 
@@ -249,15 +263,18 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
         leading=18,
         alignment=TA_LEFT,
         spaceAfter=6,
-        textColor=colors.black,
+        textColor=colors.green,     #vst org black
         fontWeight='bold',
     )
 
     ECATableHeaderStyle = TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
+        ('FONT', (0, 0), (-1, -1), "Arial"),  #vst +Font in ECAheader
+        ('SIZE', (0, 0), (-1, -1), 8),  #vst +Fontsize in ECAheader
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),  #vst +Fontcolor in ECAheader
         ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightyellow),  # vst, Header background lightgrey, lightyello
         ('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
         ('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
     ])
@@ -266,19 +283,21 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
                     ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
                     ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # Line under header
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),  # Header background
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.lavender),  # Header background vst lightgrey
                     #('LINEBEFORE', (2, 0), (2, -1), 2, colors.black),  # Double line between service and application columns
                     #('LINEBEFORE', (2, 0), (2, -1), 1, colors.white),  # Double line between service and application columns
                 ])
     
     InfoTableStyle=TableStyle([
                         ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Align text to the top
-                        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Add grid to the entire table
+                        ('GRID', (0, 0), (-1, -1), 0.5, colors.gray),  # Add grid to the entire table
                     ])
     # Table headings
     table_headers = ["RR Region 1", "European Common Allocations", "Application", "CEPT Deliverables", "Standard", "Note"]
-    col_widths = [150, 150, 152, 92, 58, 180]  # Adjust based on content
-
+    # org: col_widths = [150, 150, 152, 92, 58, 180]  # Adjust based on content. Style
+    col_widths = [165, 165, 130, 84, 58, 180]  # Adjust based on content. Style
+    # vst col_widths = [165, 165, 130, 85, 58, 180] # 
+    
     FN_table_headers = ["Footnote Number", "Footnote Content"]
     FN_col_widths = [100, 50+150+152+92+58+180]  # Adjust based on content
 
