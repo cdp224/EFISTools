@@ -21,3 +21,4 @@ __pycache__/
 /TestDownload
 src/ECOdocbase/LATEST.csv
 src/LATEST.csv
+src/delme.txt

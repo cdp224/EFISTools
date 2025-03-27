@@ -68,11 +68,13 @@ def find_space_or_hyphen(s):
 #services and the position in ordering according to the french way. Extract these numbers
 #according to the services at hand and to the reordering accordingly.
 def wrap_service_data_info(in_string, footnotesdict):
+    #print("In string: "+str(in_string))
     in_bracket = False
     test_str = in_string
     remaining_str = test_str
     servicedata_info = ""
     line_char_count = 0
+    line_break_limit = 28 #25
     kill_next_char = False
     foot_note = ""
     for i in test_str:
@@ -85,6 +87,12 @@ def wrap_service_data_info(in_string, footnotesdict):
                 line_char_count = line_char_count + 0.65
             if in_bracket == True:
                 nc=""
+                if i == "-": #check if a break is needed
+                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
+                        footnote_info=foot_note+"-<br/>&nbsp;&nbsp;&nbsp;"
+                        nc=footnote_info
+                        foot_note=""
+                        line_char_count = 2
                 if i == ',':  #in a bracket replace the comma with void, i.e., just remove it
                     foot_note=foot_note.strip()
                     #print(foot_note + " = " +str(footnotesdict.get(foot_note)))
@@ -94,6 +102,9 @@ def wrap_service_data_info(in_string, footnotesdict):
                     else:
                         footnote_info = f'<a href="#{foot_note}">{foot_note}</a> '
                     nc=footnote_info
+                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
+                        nc=footnote_info+"<br/>&nbsp;&nbsp;&nbsp;"
+                        line_char_count = 2
                     #print("two")
                     #print(foot_note)
                     #print(nc)
@@ -108,7 +119,7 @@ def wrap_service_data_info(in_string, footnotesdict):
                         #    print(foot_note + " = " +str(footnotesdict.get(foot_note)))
                         if (str(footnotesdict.get(foot_note)) == "None"):
                             print("Footnote "+ foot_note +" was not found in appendix.")
-                            footnote_info = foot_note
+                            footnote_info = foot_note + ")"
                         else:
                             footnote_info = f'<a href="#{foot_note}">{foot_note}</a>)'
                     
@@ -119,7 +130,7 @@ def wrap_service_data_info(in_string, footnotesdict):
                         nc=footnote_info
                         foot_note = ""
                 else:
-                    foot_note=foot_note+i
+                    foot_note=foot_note + i
             if i == '(':
                 foot_note = ""
                 in_bracket = True
@@ -129,16 +140,18 @@ def wrap_service_data_info(in_string, footnotesdict):
                     line_char_count = 0
                     kill_next_char = True
             if i == "-": #check if a break is needed
-                if find_space_or_hyphen(remaining_str) + line_char_count > 25: 
+                if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
                     nc="-<br/>&nbsp;&nbsp;&nbsp;"
                     line_char_count = 2
             if i == " ": #check if a break is needed
-                if find_space_or_hyphen(remaining_str) + line_char_count > 25: 
+                if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
                     nc="<br/>&nbsp;&nbsp;&nbsp;"
                     line_char_count = 2
             servicedata_info=servicedata_info + nc
+ #           print("Service data info build: " + servicedata_info)
         else:
             kill_next_char = False
+    #print("Out string: " + str(servicedata_info))
     return servicedata_info
 
 def wrap_deliverables_info(in_string, docdict):
