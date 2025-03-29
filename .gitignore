@@ -22,3 +22,4 @@ __pycache__/
 src/ECOdocbase/LATEST.csv
 src/LATEST.csv
 src/delme.txt
+src/helper/relative_widths.json
