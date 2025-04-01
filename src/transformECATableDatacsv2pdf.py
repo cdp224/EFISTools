@@ -94,6 +94,7 @@ def wrap_service_data_info(in_string, footnotesdict):
     line_char_count = 0
     line_break_limit = 28 #25
     kill_next_char = False
+    first_in_bracket = False
     foot_note = ""
     for i in test_str:
         remaining_str = remaining_str[1:]
@@ -101,18 +102,28 @@ def wrap_service_data_info(in_string, footnotesdict):
             nc = i #default: next charactrer is the current character...
             #print("i= "+str(i)+" Width="+str(relative_character_width.get(i)))
             line_char_count = line_char_count + relative_character_width.get(i)
-            #if nc.isupper():
-            #    line_char_count = line_char_count + 1
-            #else:
-            #    line_char_count = line_char_count + 0.65
             if in_bracket == True:
                 nc=""
                 if i == "-": #check if a break is needed
+                    if first_in_bracket==True:
+                        foot_note="("+foot_note
+                        first_in_bracket = False
+                    footnote_info=foot_note
                     if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                        footnote_info=foot_note+"-<br/>&nbsp;&nbsp;&nbsp;"
-                        nc=footnote_info
-                        foot_note=""
-                        line_char_count = 2
+                        footnote_info=footnote_info+"-<br/>&nbsp;&nbsp;&nbsp;"
+                        line_char_count = 3 * relative_character_width.get(' ')
+                    nc=footnote_info
+                    foot_note=""
+                if i == " ": #check if a break is needed
+                    if first_in_bracket==True:
+                        foot_note="("+foot_note
+                        first_in_bracket = False
+                    footnote_info=foot_note
+                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
+                        footnote_info=footnote_info+"<br/>&nbsp;&nbsp;&nbsp;"
+                        line_char_count = 3 * relative_character_width.get(' ')    
+                    nc=footnote_info
+                    foot_note=""
                 if i == ',':  #in a bracket replace the comma with void, i.e., just remove it
                     foot_note=foot_note.strip()
                     #print(foot_note + " = " +str(footnotesdict.get(foot_note)))
@@ -121,38 +132,37 @@ def wrap_service_data_info(in_string, footnotesdict):
                         footnote_info = foot_note
                     else:
                         footnote_info = f'<a href="#{foot_note}">{foot_note}</a> '
+                    if first_in_bracket==True:
+                        footnote_info="("+footnote_info
+                        first_in_bracket = False
                     nc=footnote_info
                     if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
                         nc=footnote_info+"<br/>&nbsp;&nbsp;&nbsp;"
-                        line_char_count = 2
-                    #print("two")
-                    #print(foot_note)
-                    #print(nc)
+                        line_char_count = 3 * relative_character_width.get(' ')
                     foot_note = ""
                 elif i == ')':
                     in_bracket = False
                     nc=foot_note + i
+                    footnote_info = foot_note.strip()
                     if foot_note.strip().startswith('5.'):
                         foot_note=foot_note.strip()
-                        #print("FootnoteID = "+foot_note)
-                        #if (foot_note == "5.118"):
-                        #    print(foot_note + " = " +str(footnotesdict.get(foot_note)))
                         if (str(footnotesdict.get(foot_note)) == "None"):
                             print("Footnote "+ foot_note +" was not found in appendix.")
-                            footnote_info = foot_note + ")"
+                            footnote_info = foot_note
                         else:
-                            footnote_info = f'<a href="#{foot_note}">{foot_note}</a>)'
+                            footnote_info = f'<a href="#{foot_note}">{foot_note}</a>'
                     
-                        #footnote_info = f'<a href="#{foot_note.strip()}">{foot_note.strip()}</a>)'
-                        #print("sole")
-                        #print(foot_note)
-                        #print(nc)
-                        nc=footnote_info
-                        foot_note = ""
+                    if first_in_bracket==True:
+                        footnote_info="("+footnote_info 
+                        first_in_bracket = False
+                    nc=footnote_info+")"
+                    foot_note = ""
                 else:
                     foot_note=foot_note + i
             if i == '(':
                 foot_note = ""
+                first_in_bracket = True
+                nc = ""
                 in_bracket = True
             if in_bracket == False:
                 if i == ',':  #outside a bracket replace a comma with a break; remove next (space)
@@ -162,11 +172,11 @@ def wrap_service_data_info(in_string, footnotesdict):
             if i == "-": #check if a break is needed
                 if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
                     nc="-<br/>&nbsp;&nbsp;&nbsp;"
-                    line_char_count = 2
+                    line_char_count = 3 * relative_character_width.get(' ')
             if i == " ": #check if a break is needed
                 if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
                     nc="<br/>&nbsp;&nbsp;&nbsp;"
-                    line_char_count = 2
+                    line_char_count = 3 * relative_character_width.get(' ')
             servicedata_info=servicedata_info + nc
  #           print("Service data info build: " + servicedata_info)
         else:
