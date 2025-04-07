@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import re
 import csv
+import string
 import requests
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -62,127 +63,157 @@ def find_space_or_hyphen(s):
         # Both are found, return the one with the lower index (earliest in the string)
         return estimate_string_length(s[:min(pos_space, pos_hyphen, pos_comma)])
 
+def parse_services_and_footnotes(input_string):
+    services = []
+    
+    # Split the input string by commas, but we'll manually check for parentheses
+    service_parts = []
+    current_service = []
+    parentheses_count = 0
+    
+    for char in input_string.strip():
+        if char == ',' and parentheses_count == 0:
+            # If we encounter a comma and we're not inside parentheses, we've reached a service boundary
+            service_parts.append(''.join(current_service).strip())
+            current_service = []
+        else:
+            if char == '(':
+                parentheses_count += 1
+            elif char == ')':
+                parentheses_count -= 1
+            current_service.append(char)
+    
+    # Append the last service
+    if current_service:
+        service_parts.append(''.join(current_service).strip())
+    
+    # Parse services and footnotes
+    for part in service_parts:
+        # Find all footnotes (starting with '5.' and inside parentheses)
+        footnotes = re.findall(r'\(.*?5\.[^\)]+\)', part)
+        service_name = part
+        
+        # Remove footnotes from the service name (if any)
+        for footnote in footnotes:
+            service_name = service_name.replace(footnote, '').strip()
+
+        # Extract footnotes from the parentheses, remove the parentheses and split by commas
+        footnote_list = []
+        for footnote in footnotes:
+            # Find all individual footnotes starting with '5.'
+            footnote_list.extend(re.findall(r'5\.[\w.]+', footnote))
+        
+        # Append the service and its corresponding footnotes to the services list
+        services.append({
+            'service': service_name.strip(),
+            'footnotes': footnote_list
+        })
+
+    return services
+
+def make_charwidth_lookup_table():
+    # Register Arial font (Make sure you have 'arial.ttf' in the same directory or installed in your system)
+    pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
+
+    # Define the font name, size, and reference character for normalization
+    font_name = "Arial"
+    font_size = 8
+    reference_char = 'A'
+
+    # Get the width of the reference character 'A'
+    reference_width = pdfmetrics.stringWidth(reference_char, font_name, font_size)
+
+    # Characters to measure
+    characters = string.ascii_letters + string.digits + "-() ."
+
+    # Create the dictionary of relative widths
+    relative_widths = {
+        char: pdfmetrics.stringWidth(char, font_name, font_size) / reference_width
+        for char in characters
+    }
+
+    return relative_widths
+    
+
+def render_service(service_entry, width_lookup, footnotesdict):
+    max_width = 28  # Max width in units
+    indent = "&nbsp;&nbsp;&nbsp;"  # Indent for wrapped lines
+    indentasstring="   "
+
+    def get_width(s):
+        summe = 0
+        for char in s:
+            summe = summe + width_lookup.get(char)
+        return summe
+
+    def split_text(text):
+        return re.split(r'([ -])', text)  # Keep spaces and hyphens
+
+    service_text = service_entry[1].get('service')
+    footnotes = service_entry[1].get('footnotes')
+
+    words = split_text(service_text)
+    rendered_lines = []
+    current_line = ""
+    current_width = 0
+
+    # Build service name lines
+    for word in words:
+        word_width = get_width(word)
+        if current_width + word_width > max_width and current_line:
+            rendered_lines.append(current_line)
+            current_line = indent + word
+            current_width = get_width(indentasstring) + word_width
+        else:
+            current_line += word
+            current_width += word_width
+
+    # Add footnotes if they exist
+    if footnotes:
+        for i, footnote in enumerate(footnotes):
+            vorspiel = " ("
+            if i == len(footnotes) and len(footnotes)>1:
+                vorspiel = ""
+            elif i > 0 :
+                vorspiel = " " 
+            part_width = get_width(vorspiel + footnote)
+            if (str(footnotesdict.get(footnote)) == "None"):
+                print("Footnote "+ footnote +" was not found in appendix.")
+                footnote_info = footnote
+            else:
+                footnote_info = f'<a href="#{footnote}">{footnote}</a>'     
+            if current_width + part_width + get_width(")") > max_width:
+                rendered_lines.append(current_line)
+                current_line = indent + vorspiel + footnote_info
+                current_width = get_width(indentasstring) + get_width(vorspiel + footnote)
+            else:
+                current_line = current_line + vorspiel + footnote_info
+                current_width += part_width
+        # Close the final parenthesis
+        current_line = current_line + ")"
+
+    if current_line:
+        rendered_lines.append(current_line)
+
+    returnstring = "<br/>".join(rendered_lines) + "<br/>"
+    return returnstring
+
+def iterate_services(structured_services, relative_character_width, footnotesdict):
+    services_string=""  
+    for item in enumerate(structured_services, 1):
+        services_string = services_string + render_service(item, relative_character_width, footnotesdict)
+    return services_string
+
 #this routine takes the string from the csv and formats it according to the
 #Radio Regulations. This needs to be extended to support reordering of the services 
 #according to the french ordering. Proposal: make a lookup table that stores the
 #services and the position in ordering according to the french way. Extract these numbers
 #according to the services at hand and to the reordering accordingly.
 def wrap_service_data_info(in_string, footnotesdict):
-    #print("In string: "+str(in_string))
-
-    relative_character_width = {'a': 0.8338213762811127, 'b': 0.8338213762811127, 'c': 0.7496339677891655, 'd': 0.8338213762811127, 
-                                'e': 0.8338213762811127, 'f': 0.41654465592972184, 'g': 0.8338213762811127, 'h': 0.8338213762811127, 
-                                'i': 0.3330893118594436, 'j': 0.3330893118594436, 'k': 0.7496339677891655, 'l': 0.3330893118594436, 
-                                'm': 1.2489019033674964, 'n': 0.8338213762811127, 'o': 0.8338213762811127, 'p': 0.8338213762811127, 
-                                'q': 0.8338213762811127, 'r': 0.4992679355783309, 's': 0.7496339677891655, 't': 0.41654465592972184, 
-                                'u': 0.8338213762811127, 'v': 0.7496339677891655, 'w': 1.082723279648609, 'x': 0.7496339677891655, 
-                                'y': 0.7496339677891655, 'z': 0.7496339677891655, 'A': 1.0, 'B': 1.0, 'C': 1.082723279648609, 
-                                'D': 1.082723279648609, 'E': 1.0, 'F': 0.9158125915080527, 'G': 1.1661786237188874, 'H': 1.082723279648609, 
-                                'I': 0.41654465592972184, 'J': 0.7496339677891655, 'K': 1.0, 'L': 0.8338213762811127, 'M': 1.2489019033674964,
-                                  'N': 1.082723279648609, 'O': 1.1661786237188874, 'P': 1.0, 'Q': 1.1661786237188874, 'R': 1.082723279648609, 
-                                  'S': 1.0, 'T': 0.9158125915080527, 'U': 1.082723279648609, 'V': 1.0, 'W': 1.4150805270863835, 'X': 1.0, 
-                                  'Y': 1.0, 'Z': 0.9158125915080527, '0': 0.8338213762811127, '1': 0.8338213762811127, '2': 0.8338213762811127,
-                                    '3': 0.8338213762811127, '4': 0.8338213762811127, '5': 0.8338213762811127, '6': 0.8338213762811127, 
-                                    '7': 0.8338213762811127, '8': 0.8338213762811127, '9': 0.8338213762811127, '-': 0.4992679355783309, 
-                                    '(': 0.4992679355783309, ')': 0.4992679355783309,  ' ': 0.41654465592972184, '.': 0.41654465592972184, 
-                                    ',': 0.41654465592972184}
-
-    in_bracket = False
-    test_str = in_string
-    remaining_str = test_str
-    servicedata_info = ""
-    line_char_count = 0
-    line_break_limit = 28 #25
-    kill_next_char = False
-    first_in_bracket = False
-    foot_note = ""
-    for i in test_str:
-        remaining_str = remaining_str[1:]
-        if kill_next_char == False:
-            nc = i #default: next charactrer is the current character...
-            #print("i= "+str(i)+" Width="+str(relative_character_width.get(i)))
-            line_char_count = line_char_count + relative_character_width.get(i)
-            if in_bracket == True:
-                nc=""
-                if i == "-": #check if a break is needed
-                    if first_in_bracket==True:
-                        foot_note="("+foot_note
-                        first_in_bracket = False
-                    footnote_info=foot_note
-                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                        footnote_info=footnote_info+"-<br/>&nbsp;&nbsp;&nbsp;"
-                        line_char_count = 3 * relative_character_width.get(' ')
-                    nc=footnote_info
-                    foot_note=""
-                if i == " ": #check if a break is needed
-                    if first_in_bracket==True:
-                        foot_note="("+foot_note
-                        first_in_bracket = False
-                    footnote_info=foot_note
-                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                        footnote_info=footnote_info+"<br/>&nbsp;&nbsp;&nbsp;"
-                        line_char_count = 3 * relative_character_width.get(' ')    
-                    nc=footnote_info
-                    foot_note=""
-                if i == ',':  #in a bracket replace the comma with void, i.e., just remove it
-                    foot_note=foot_note.strip()
-                    #print(foot_note + " = " +str(footnotesdict.get(foot_note)))
-                    if (str(footnotesdict.get(foot_note)) == "None"):
-                        print("Footnote "+ foot_note +" was not found in appendix.")
-                        footnote_info = foot_note
-                    else:
-                        footnote_info = f'<a href="#{foot_note}">{foot_note}</a> '
-                    if first_in_bracket==True:
-                        footnote_info="("+footnote_info
-                        first_in_bracket = False
-                    nc=footnote_info
-                    if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                        nc=footnote_info+"<br/>&nbsp;&nbsp;&nbsp;"
-                        line_char_count = 3 * relative_character_width.get(' ')
-                    foot_note = ""
-                elif i == ')':
-                    in_bracket = False
-                    nc=foot_note + i
-                    footnote_info = foot_note.strip()
-                    if foot_note.strip().startswith('5.'):
-                        foot_note=foot_note.strip()
-                        if (str(footnotesdict.get(foot_note)) == "None"):
-                            print("Footnote "+ foot_note +" was not found in appendix.")
-                            footnote_info = foot_note
-                        else:
-                            footnote_info = f'<a href="#{foot_note}">{foot_note}</a>'
-                    
-                    if first_in_bracket==True:
-                        footnote_info="("+footnote_info 
-                        first_in_bracket = False
-                    nc=footnote_info+")"
-                    foot_note = ""
-                else:
-                    foot_note=foot_note + i
-            if i == '(':
-                foot_note = ""
-                first_in_bracket = True
-                nc = ""
-                in_bracket = True
-            if in_bracket == False:
-                if i == ',':  #outside a bracket replace a comma with a break; remove next (space)
-                    nc="<br/>"
-                    line_char_count = 0
-                    kill_next_char = True
-            if i == "-": #check if a break is needed
-                if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                    nc="-<br/>&nbsp;&nbsp;&nbsp;"
-                    line_char_count = 3 * relative_character_width.get(' ')
-            if i == " ": #check if a break is needed
-                if find_space_or_hyphen(remaining_str) + line_char_count > line_break_limit: 
-                    nc="<br/>&nbsp;&nbsp;&nbsp;"
-                    line_char_count = 3 * relative_character_width.get(' ')
-            servicedata_info=servicedata_info + nc
- #           print("Service data info build: " + servicedata_info)
-        else:
-            kill_next_char = False
-    #print("Out string: " + str(servicedata_info))
-    return servicedata_info
+    services_struct = parse_services_and_footnotes(in_string)
+    relative_character_width = make_charwidth_lookup_table()
+    #print("INString: "+in_string)
+    return iterate_services(services_struct, relative_character_width, footnotesdict)
 
 def wrap_deliverables_info(in_string, docdict):
     test_str = in_string
@@ -214,6 +245,23 @@ def wrap_deliverables_info(in_string, docdict):
     urldoc=docdict.get(deliverable)
     servicedata_info_out = servicedata_info_out + f'<link href="{urldoc}">{deliverable}</link>'    
     return servicedata_info_out
+
+def freqband_footnote_render(footnote_info, footnotesdict):
+    footnote_info_temp=""
+    #print ("split it = " + footnote_info.split(",")) 
+    for word in footnote_info.split(","):
+        word = str(word).strip()
+        if word != "":
+            if (str(footnotesdict.get(word)) == "None"):
+                print("Footnote "+ word +" was not found in appendix.")
+            else:
+                word = f'<a href="#{word}">{word}</a>'
+            if footnote_info_temp == "":
+                footnote_info_temp = word
+            else:
+                footnote_info_temp = footnote_info_temp + " " + word
+    return footnote_info_temp
+
 
 def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
@@ -430,35 +478,19 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
                 #table_data = [table_headers]  # Reset the table data with the headers
 
             # Prepare row data for the table
-            #footnote_info = row['RR Region 1 Footnotes'].replace(",", "")
             footnote_info = row['RR Region 1 Footnotes']
-
-            #footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
-            footnote_info_temp=""
-            #print ("split it = " + footnote_info.split(",")) 
-            for word in footnote_info.split(","):
-                word = str(word).strip()
-                if word != "":
-                    if (str(footnotesdict.get(word)) == "None"):
-                        print("Footnote "+ word +" was not found in appendix.")
-                    else:
-                        word = f'<a href="#{word}">{word}</a>'
-                    if footnote_info_temp == "":
-                        footnote_info_temp = word
-                    else:
-                        footnote_info_temp = footnote_info_temp + ", " + word
-            footnote_info = footnote_info_temp
-
+            footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
+            
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
             servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
-            service_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style) #attach the footnotes
+            service_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style) #attach the footnotes
 
-            #footnote_info = row['ECA Footnotes'].replace(",", "")
             footnote_info = row['ECA Footnotes']
-            footnote_info = ", ".join([f'<a href="#{word.strip()}">{word.strip()}</a>' for word in footnote_info.split(",")])
+            footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
+            
             servicedata_info = row['European Common Allocation'].replace("(", " (")
             servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
-            cept_info = Paragraph(f"{servicedata_info}<br/><br/>{footnote_info}", common_style)
+            cept_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style)
 
             app_info = Paragraph(row['Applications'], common_style)
             cept_doc = Paragraph(wrap_deliverables_info(row['ECC/ERC Harmonisation Measure'], docdict), common_style)
