@@ -209,9 +209,8 @@ def iterate_services(structured_services, relative_character_width, footnotesdic
 #according to the french ordering. Proposal: make a lookup table that stores the
 #services and the position in ordering according to the french way. Extract these numbers
 #according to the services at hand and to the reordering accordingly.
-def wrap_service_data_info(in_string, footnotesdict):
+def wrap_service_data_info(in_string, footnotesdict, relative_character_width):
     services_struct = parse_services_and_footnotes(in_string)
-    relative_character_width = make_charwidth_lookup_table()
     #print("INString: "+in_string)
     return iterate_services(services_struct, relative_character_width, footnotesdict)
 
@@ -421,6 +420,8 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
     inECAFootnoteTable = False
     docType = "ECATable"
 
+    relative_character_width = make_charwidth_lookup_table()
+
     for index, row in data.iterrows():
         
         #Footnote Part of csv reached
@@ -480,16 +481,16 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
             # Prepare row data for the table
             footnote_info = row['RR Region 1 Footnotes']
             footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
-            
+
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
-            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
+            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
             service_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style) #attach the footnotes
 
             footnote_info = row['ECA Footnotes']
             footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
             
             servicedata_info = row['European Common Allocation'].replace("(", " (")
-            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict) #wrap the service data
+            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
             cept_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style)
 
             app_info = Paragraph(row['Applications'], common_style)
