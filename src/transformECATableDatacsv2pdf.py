@@ -484,6 +484,9 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
             servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
+            #top_para = Paragraph(servicedata_info, common_style)
+            #bottom_para = Paragraph(footnote_info, common_style)
+
             service_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style) #attach the footnotes
 
             footnote_info = row['ECA Footnotes']

@@ -24,3 +24,5 @@ src/LATEST.csv
 src/delme.txt
 src/helper/relative_widths.json
 src/helper/serviceparser.py
+src/helper/renderCell.py
+src/helper/top_bottom_cell_example.pdf
