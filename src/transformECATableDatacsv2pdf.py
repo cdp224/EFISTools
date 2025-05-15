@@ -261,6 +261,32 @@ def freqband_footnote_render(footnote_info, footnotesdict):
                 footnote_info_temp = footnote_info_temp + " " + word
     return footnote_info_temp
 
+def populate_footnotes_dict(footnotesdict, dict_of_referenced_footnotes, footnote_info, service_info):
+    #print ("split it = " + footnote_info.split(","))
+    if footnote_info != "": 
+        for word in footnote_info.split(","):
+            word = str(word).strip()
+            if word != "":
+                if (str(footnotesdict.get(word)) == "None"):
+                    print("Footnote "+ word +" was not found in appendix.")
+                else:
+                    if (str(dict_of_referenced_footnotes.get(word)) == "None"):
+                        print("Footnote "+ word + " was not yet referenced and will e added to dict.")
+                        dict_of_referenced_footnotes[word] = str(footnotesdict.get(word))
+    #Process the service_info
+    if service_info !="":
+        service = parse_services_and_footnotes(service_info)
+        for item in enumerate(service, 1):
+            footnotes = item[1].get('footnotes')
+            if footnotes:
+                for i, footnote in enumerate(footnotes):
+                    if (str(footnotesdict.get(footnote)) == "None"):
+                        print("Footnote "+ footnote +" was not found in appendix.")
+                    else:
+                        if (str(dict_of_referenced_footnotes.get(footnote)) == "None"):
+                            print("Footnote "+ footnote + " was not yet referenced and will e added to dict.")
+                            dict_of_referenced_footnotes[footnote] = str(footnotesdict.get(footnote))
+    return dict_of_referenced_footnotes
 
 def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
@@ -422,6 +448,8 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
     relative_character_width = make_charwidth_lookup_table()
 
+    dict_of_referenced_footnotes = {}
+
     for index, row in data.iterrows():
         
         #Footnote Part of csv reached
@@ -480,21 +508,27 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
 
             # Prepare row data for the table
             footnote_info = row['RR Region 1 Footnotes']
+            dict_of_referenced_footnotes = populate_footnotes_dict(footnotesdict, dict_of_referenced_footnotes, footnote_info, "")
             footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
+            #RR_footnotes_dict = freqband_footnote_dict_builder(footnote_info, footnotesdict, RR_footnotes_dict)
+
 
             servicedata_info = row['RR Region 1 Allocation'].replace("(", " (") #add spaces before the '('
-            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
+            dict_of_referenced_footnotes = populate_footnotes_dict(footnotesdict, dict_of_referenced_footnotes, "", servicedata_info)
+            wrapped_servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
             #top_para = Paragraph(servicedata_info, common_style)
             #bottom_para = Paragraph(footnote_info, common_style)
 
-            service_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style) #attach the footnotes
+            service_info = Paragraph(f"{wrapped_servicedata_info}<br/>{footnote_info}", common_style) #attach the footnotes
 
             footnote_info = row['ECA Footnotes']
+            dict_of_referenced_footnotes = populate_footnotes_dict(footnotesdict, dict_of_referenced_footnotes, footnote_info, "")
             footnote_info = freqband_footnote_render(footnote_info, footnotesdict)
             
             servicedata_info = row['European Common Allocation'].replace("(", " (")
-            servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
-            cept_info = Paragraph(f"{servicedata_info}<br/>{footnote_info}", common_style)
+            dict_of_referenced_footnotes = populate_footnotes_dict(footnotesdict, dict_of_referenced_footnotes, "", servicedata_info)
+            wrapped_servicedata_info = wrap_service_data_info(servicedata_info, footnotesdict, relative_character_width) #wrap the service data
+            cept_info = Paragraph(f"{wrapped_servicedata_info}<br/>{footnote_info}", common_style)
 
             app_info = Paragraph(row['Applications'], common_style)
             cept_doc = Paragraph(wrap_deliverables_info(row['ECC/ERC Harmonisation Measure'], docdict), common_style)
@@ -514,6 +548,8 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
             comas_for_table = comas_for_table+commas_for_row
         elif (inECAtable == False and inECAFootnoteTable == False):
             inECAFootnoteTable = True
+            print("Dict of Referenced Footnotes")
+            print(dict_of_referenced_footnotes)
             # Add the last table for the remaining data
             if table_data:
                 # Estimate the number of lines the last table will use
@@ -595,7 +631,11 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
                 foot_note_content = row['Upper Frequency']
                 if (docType=="ECANotes" or docType=="RR"):
                     fid=str(row['Lower Frequency']).strip()
-                    foot_note_number = "<a name='" +fid+"'/>"+ fid
+                    if (str(dict_of_referenced_footnotes.get(fid)) == "None"):
+                        print("Footnote "+ fid + " was not referenced in ECA table and will not be added to appendix")
+                        foot_note_number = ""
+                    else:
+                        foot_note_number = "<a name='" +fid+"'/>"+ fid
                 #print(foot_note_content)
                 if (docType=="CEPT"):
                     urldoc=docdict.get(foot_note_number)
@@ -611,21 +651,22 @@ def generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_filename):
                     else:
                         foot_note_number = f'<link href="{urldoc}">{foot_note_number}</link>'
 
-                foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
-                foot_note_content_par = Paragraph(f"{foot_note_content}", common_style) #attach the footnotes
+                if foot_note_number != "":
+                    foot_note_number_par = Paragraph(f"{foot_note_number}", common_style) #attach the footnotes
+                    foot_note_content_par = Paragraph(f"{foot_note_content}", common_style) #attach the footnotes
                 
-                if lines_used < 100: #ignore line.
-                    if first_line:
-                        table_first_line = [foot_note_number_par, foot_note_content_par]
-                        table_data = [table_first_line]  # Reset the table data with the headers
-                        #table_data.append([service_info, cept_info, app_info, cept_doc, standard, notes])
-                        first_line = False
-                    else:
-                        table_data.append([foot_note_number_par, foot_note_content_par])
-                
-                    footnote_height = max(len(foot_note_content_par.text) // 190,  foot_note_content_par.text.count('<br/>'))
-                    lines_used = lines_used + footnote_height + 1.4
-                    #print(lines_used)
+                    if lines_used < 100: #ignore line.
+                        if first_line:
+                            table_first_line = [foot_note_number_par, foot_note_content_par]
+                            table_data = [table_first_line]  # Reset the table data with the headers
+                            #table_data.append([service_info, cept_info, app_info, cept_doc, standard, notes])
+                            first_line = False
+                        else:
+                            table_data.append([foot_note_number_par, foot_note_content_par])
+                    
+                        footnote_height = max(len(foot_note_content_par.text) // 190,  foot_note_content_par.text.count('<br/>'))
+                        lines_used = lines_used + footnote_height + 1.4
+                        #print(lines_used)
 
                 if (lines_used  > max_lines_per_page):
 
