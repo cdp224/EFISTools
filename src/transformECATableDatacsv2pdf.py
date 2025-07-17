@@ -90,7 +90,7 @@ def parse_services_and_footnotes(input_string):
     # Parse services and footnotes
     for part in service_parts:
         # Find all footnotes (starting with '5.' and inside parentheses)
-        footnotes = re.findall(r'\(.*?5\.[^\)]+\)', part)
+        footnotes = re.findall(r'\(.*?(?:5\.|ECA)[^\)]+\)', part)
         service_name = part
         
         # Remove footnotes from the service name (if any)
@@ -101,7 +101,7 @@ def parse_services_and_footnotes(input_string):
         footnote_list = []
         for footnote in footnotes:
             # Find all individual footnotes starting with '5.'
-            footnote_list.extend(re.findall(r'5\.[\w.]+', footnote))
+            footnote_list.extend(re.findall(r'(?:5\.|ECA)[\w.]+', footnote))
         
         # Append the service and its corresponding footnotes to the services list
         services.append({
