@@ -688,7 +688,7 @@ amended on 18 May 2018 (FM#91)";"=HYPERLINK(""http://docdb.cept.org/download/186
 "ECC Recommendations";"ECC/REC/(04)04";"WGNaN";"2004-01-27";"Withdrawn";"ECC/REC/(04)04 of 27 January 2004 on data-only terminals that do not use E.164 numbers for their services";"=HYPERLINK(""http://docdb.cept.org/download/1869"")";"=HYPERLINK(""http://docdb.cept.org/document/469"")"
 "ECC Recommendations";"ECC/REC/(04)03";"WGNaN";"2004-01-27";"Withdrawn";"ECC/REC/(04)03 of 27 January 2004 on specific E.164 numbers for fax and data services separate from the number for voice telephony";"=HYPERLINK(""http://docdb.cept.org/download/1871"")";"=HYPERLINK(""http://docdb.cept.org/document/468"")"
 "ECC Recommendations";"ECC/REC/(04)02";"WGNaN";"2004-01-27";"Withdrawn";"ECC/REC/(04)02 of 27 January 2007 on the choice of number range for services on emerging mobile systems";"=HYPERLINK(""http://docdb.cept.org/download/1873"")";"=HYPERLINK(""http://docdb.cept.org/document/467"")"
-"ECC Recommendations";"ECC/REC/(04)01";"WGFM";"2013-02-08";"Active";"ECC/REC/(04)01 of 13 February 2004 with regard to the prohibition of jammers in the CEPT countries
+"ECC Recommendations";"ECC/REC/(04)01";"WGFM";"2025-02-14";"Active";"ECC/REC/(04)01 of 13 February 2004 with regard to the prohibition of jammers in the CEPT countries
 
 latest amended on 14 February 2025";"=HYPERLINK(""http://docdb.cept.org/download/4634"")";"=HYPERLINK(""http://docdb.cept.org/document/466"")"
 "ECC Recommendations";"ECC/REC/(03)04";"WGRA";"2003-06-03";"Withdrawn";"ECC/REC/(03)04 of 3 June 2003 with regard to forbidding the placing on the market and use of  Jammers in the CEPT member countries";"=HYPERLINK(""http://docdb.cept.org/download/1876"")";"=HYPERLINK(""http://docdb.cept.org/document/465"")"
@@ -1390,10 +1390,13 @@ corrected by ECC#66  ";"=HYPERLINK(""http://docdb.cept.org/download/4673"")";"=H
 "ECC Reports";"ECC Report 361";"WGNaN";"2024-11-28";"Active";"Next Generation Emergency Communications – transition from circuit-switched to packet-switched networks, services and PSAPs";"=HYPERLINK(""http://docdb.cept.org/download/4589"")";"=HYPERLINK(""http://docdb.cept.org/document/28632"")"
 "ECC Reports";"ECC Report 362";"ECC PT1";"2024-11-08";"Active";"Compatibility between MFCN operating in 3400-3800 MHz and wireless broadband systems in low/medium power operating in the frequency band 3800-4200 MHz with Radio Altimeters operating in 4200-4400 MHz ";"=HYPERLINK(""http://docdb.cept.org/download/4596"")";"=HYPERLINK(""http://docdb.cept.org/document/28630"")"
 "ECC Reports";"ECC Report 363";"SE40";"2025-01-24";"Active";"Aggregated interference from satellite systems into radio astronomy service";"=HYPERLINK(""http://docdb.cept.org/download/4606"")";"=HYPERLINK(""http://docdb.cept.org/document/28636"")"
-"ECC Reports";"ECC Report 364";"SE45";"2025-01-24";"Active";"Sharing and compatibility studies related to Wireless Access Systems including Radio Local Area Networks (WAS/RLAN) in the frequency band 6425-7125 MHz";"=HYPERLINK(""http://docdb.cept.org/download/4773"")";"=HYPERLINK(""http://docdb.cept.org/document/28637"")"
+"ECC Reports";"ECC Report 364";"SE45";"2025-09-26";"Active";"Sharing and compatibility studies related to Wireless Access Systems including Radio Local Area Networks (WAS/RLAN) in the frequency band 6425-7125 MHz
+
+approved 24 January 2025, editorial update 26 September 2025";"=HYPERLINK("""")";"=HYPERLINK(""http://docdb.cept.org/document/28637"")"
 "ECC Reports";"ECC Report 365";"SE19";"2025-05-23";"Active";"Fixed Links in CEPT; Technical characteristics and statistical review
 ";"=HYPERLINK(""http://docdb.cept.org/download/4765"")";"=HYPERLINK(""http://docdb.cept.org/document/28649"")"
 "ECC Reports";"ECC Report 366";"ECC PT1";"2025-06-27";"Active";"Feasibility of a potential shared use of the 6425-7125 MHz frequency band between Mobile/Fixed Communications Networks (MFCN) and Wireless Access Systems including Radio Local Area Networks (WAS/RLAN)";"=HYPERLINK(""http://docdb.cept.org/download/4790"")";"=HYPERLINK(""http://docdb.cept.org/document/28650"")"
+"ECC Reports";"ECC Report 367";"SE19";"2025-09-26";"Active";"Generic methodology for the protection of Fixed service to complement the criteria in Recommendation ITU-R F.758-8";"=HYPERLINK(""http://docdb.cept.org/download/4804"")";"=HYPERLINK(""http://docdb.cept.org/document/28654"")"
 "ECC Reports";"ECTRA Report 0101";"WGNaN";"2001-07-04";"Active";"Licensing report:
 IP Telephony";"=HYPERLINK(""http://docdb.cept.org/download/1907"")";"=HYPERLINK(""http://docdb.cept.org/document/519"")"
 "ECC Reports";"ECTRA Report 48263";"WGNaN";"1997-11-07";"Active";"Numbering report:
