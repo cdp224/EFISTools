@@ -859,6 +859,7 @@ def main():
     # Generate the PDF
     print(f"Generating PDF: {output_pdf}")
     generate_pdf(data, docdict, hamrstandsdict, footnotesdict, output_pdf)
+    generate_pdf(data, docdict, hamrstandsdict, footnotesdict, '../out/ECATable.pdf')
 
 if __name__ == "__main__":
     main()
