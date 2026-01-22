@@ -660,13 +660,13 @@ latest amended on 6 June 2025 (FM#110) ";"=HYPERLINK(""http://docdb.cept.org/dow
 "ECC Recommendations";"ECC/REC/(07)02";"WGNaN";"2007-10-10";"Active";"ECC/REC/(07)02 of 10 October 2007 on Consumer protection against abuse of High Tariff Services";"=HYPERLINK(""http://docdb.cept.org/download/1838"")";"=HYPERLINK(""http://docdb.cept.org/document/487"")"
 "ECC Recommendations";"ECC/REC/(07)01";"FM22";"2007-05-31";"Active";"ECC/REC/(07)01 of 31 May 2007 on frequency measurements using Fast Fourier Transform (FFT) techniques";"=HYPERLINK(""http://docdb.cept.org/download/1840"")";"=HYPERLINK(""http://docdb.cept.org/document/486"")"
 "ECC Recommendations";"ECC/REC/(06)05";"FM44";"2006-12-14";"Withdrawn";"ECC/REC/(06)05 of 14 December 2006 on the provision of information on the progress of implementation of  the mobile satellite systems which are candidates to use the 1980-2010 MHz and 2170-2200 MHz MSS frequency bands";"=HYPERLINK(""http://docdb.cept.org/download/1841"")";"=HYPERLINK(""http://docdb.cept.org/document/485"")"
-"ECC Recommendations";"ECC/REC/(06)04";"WGFM";"2006-12-14";"Active";"ECC/REC/(06)04 of 14 December 2006 on use of the band 5725-5875 MHz for Broadband  Fixed Wireless Access (BFWA)
+"ECC Recommendations";"ECC/REC/(06)04";"FM61";"2006-12-14";"Active";"ECC/REC/(06)04 of 14 December 2006 on use of the band 5725-5875 MHz for Broadband  Fixed Wireless Access (BFWA)
 
 ";"=HYPERLINK(""http://docdb.cept.org/download/1843"")";"=HYPERLINK(""http://docdb.cept.org/document/484"")"
 "ECC Recommendations";"ECC/REC/(06)03";"WGNaN";"2006-09-29";"Active";"ECC/REC/(06)03 of 29 September 2006 on principles related to Numbering plans for SMS Short Codes";"=HYPERLINK(""http://docdb.cept.org/download/1845"")";"=HYPERLINK(""http://docdb.cept.org/document/483"")"
 "ECC Recommendations";"ECC/REC/(06)01";"FM22";"2006-05-04";"Active";"ECC/REC/(06)01 of 4 May 2006 on bandwidth measurements using FFT techniques";"=HYPERLINK(""http://docdb.cept.org/download/1847"")";"=HYPERLINK(""http://docdb.cept.org/document/482"")"
 "ECC Recommendations";"ECC/REC/(05)09";"WGNaN";"2006-03-14";"Withdrawn";"ECC/REC/(05)09 of 14 March 2006 on customer Protection in Case of Misuse or Unauthorized Use of International E.164 Numbering";"=HYPERLINK(""http://docdb.cept.org/download/1849"")";"=HYPERLINK(""http://docdb.cept.org/document/481"")"
-"ECC Recommendations";"ECC/REC/(05)08";"WGFM";"2021-10-08";"Active";"ECC/REC/(05)08 of 1 February 2006 on frequency planning and cross-border coordination between GSM Land Mobile Systems (GSM 900, GSM 1800, and GSM-R)
+"ECC Recommendations";"ECC/REC/(05)08";"ECC PT1";"2021-10-08";"Active";"ECC/REC/(05)08 of 1 February 2006 on frequency planning and cross-border coordination between GSM Land Mobile Systems (GSM 900, GSM 1800, and GSM-R)
 
 latest amended on 8 October 2021 (FM#100)
 ";"=HYPERLINK(""http://docdb.cept.org/download/3499"")";"=HYPERLINK(""http://docdb.cept.org/document/480"")"
@@ -1377,7 +1377,7 @@ Complementary Report to ECC Report 304
 "ECC Reports";"ECC Report 343";"SE24";"2022-10-07";"Active";"New coexistence studies between various Short range device (SRD) applications and SRDs in data networks in the frequency band 915-919.4 MHz";"=HYPERLINK(""http://docdb.cept.org/download/4159"")";"=HYPERLINK(""http://docdb.cept.org/document/28566"")"
 "ECC Reports";"ECC Report 344";"SE24";"2025-05-23";"Active";"Sharing and compatibility studies of Security Scanners (SScs) within frequency range 60-82 GHz
 
-Addendum to ECC Report 344: ""Interference mitigation scenarios for outdoor Security Scanners Type #2""";"=HYPERLINK(""http://docdb.cept.org/download/4156, http://docdb.cept.org/download/4714"")";"=HYPERLINK(""http://docdb.cept.org/document/28565"")"
+Addendum to ECC Report 344: ""Interference mitigation scenarios for outdoor Security Scanners Type #2""";"=HYPERLINK(""http://docdb.cept.org/download/4156, http://docdb.cept.org/download/4872"")";"=HYPERLINK(""http://docdb.cept.org/document/28565"")"
 "ECC Reports";"ECC Report 345";"SE21";"2022-10-07";"Active";"In-band measurement methodologies for 5G AAS base stations in the field";"=HYPERLINK(""http://docdb.cept.org/download/4152"")";"=HYPERLINK(""http://docdb.cept.org/document/28564"")"
 "ECC Reports";"ECC Report 346";"WGSE";"2022-10-07";"Active";"Technical studies on sharing between weather radars in part of 5365-5470 MHz and EESS (active)";"=HYPERLINK(""http://docdb.cept.org/download/4161"")";"=HYPERLINK(""http://docdb.cept.org/document/28567"")"
 "ECC Reports";"ECC Report 347";"ECC PT1";"2022-11-18";"Active";"Analysis of the suitability and update of the regulatory technical conditions for 5G MFCN and AAS operation in the 2300-2400 MHz band";"=HYPERLINK(""http://docdb.cept.org/download/4185"")";"=HYPERLINK(""http://docdb.cept.org/document/28576"")"
