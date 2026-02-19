@@ -172,7 +172,7 @@ latest amended 26 October 2018 (ECC#49)";"=HYPERLINK(""http://docdb.cept.org/dow
 amended on 17 June 2016 (ECC#42)";"=HYPERLINK(""http://docdb.cept.org/download/1540"")";"=HYPERLINK(""http://docdb.cept.org/document/430"")"
 "ECC Decisions";"ECC/DEC/(11)02";"SRDMG";"2024-11-08";"Active";"ECC/DEC/(11)02 of 11 March 2011 on industrial Level Probing Radars (LPR) operating in frequency bands 6-8.5 GHz, 24.05-26.5 GHz, 57-64 GHz and 75-85 GHz
 
-latest updated on 8 November (ECC#65)
+latest updated on 8 November 2024 (ECC#65)
 ";"=HYPERLINK(""http://docdb.cept.org/download/4581"")";"=HYPERLINK(""http://docdb.cept.org/document/429"")"
 "ECC Decisions";"ECC/DEC/(11)01";"FM44";"2017-03-03";"Active";"ECC/DEC/(11)01 of 11 March 2011 on the protection of the Earth exploration satellite service (passive) in the 1400-1427 MHz band
 
@@ -533,8 +533,9 @@ corrected 17 October 2025 (FM#111)";"=HYPERLINK(""http://docdb.cept.org/download
 (FM#107)";"=HYPERLINK(""http://docdb.cept.org/download/4508"")";"=HYPERLINK(""http://docdb.cept.org/document/28613"")"
 "ECC Recommendations";"ECC/REC/(24)02";"WGFM";"2024-06-07";"Active";"ECC/REC/(24)02 of 7 June 2024 on guidance for the use of governmental UAS operating within the frequency bands 1880-1900 MHz and 1910-1920 MHz
 (FM#107)";"=HYPERLINK(""http://docdb.cept.org/download/4506"")";"=HYPERLINK(""http://docdb.cept.org/document/28612"")"
-"ECC Recommendations";"ECC/REC/(24)01";"SE21";"2024-05-10";"Active";"ECC/REC/(24)01 of 10 May 2024 on Receiver resilience to transmission on adjacent frequency ranges
-(SE#96)";"=HYPERLINK(""http://docdb.cept.org/download/4491"")";"=HYPERLINK(""http://docdb.cept.org/document/28606"")"
+"ECC Recommendations";"ECC/REC/(24)01";"SE21";"2026-01-30";"Active";"ECC/REC/(24)01 of 10 May 2024 on Receiver resilience to transmission on adjacent frequency ranges
+
+updated on 30 January 2026 (SE#101)";"=HYPERLINK(""http://docdb.cept.org/download/4906"")";"=HYPERLINK(""http://docdb.cept.org/document/28606"")"
 "ECC Recommendations";"ECC/REC/(23)03";"NaN2";"2023-11-28";"Active";"ECC/REC/(23)03 of 28 November 2023 on measures to handle incoming international voice calls with suspected spoofed national E.164 numbers
 (NaN#27)";"=HYPERLINK(""http://docdb.cept.org/download/4402"")";"=HYPERLINK(""http://docdb.cept.org/document/28602"")"
 "ECC Recommendations";"ECC/REC/(23)02";"ECC PT1";"2023-07-07";"Active";"ECC/REC/(23)02 of 7 July 2023 on cross-border coordination for Mobile/Fixed Communications Networks (MFCN) in the frequency band 24.25-27.5 GHz
@@ -1409,6 +1410,9 @@ approved 24 January 2025, editorial update 26 September 2025";"=HYPERLINK(""http
 "ECC Reports";"ECC Report 366";"ECC PT1";"2025-06-27";"Active";"Feasibility of a potential shared use of the 6425-7125 MHz frequency band between Mobile/Fixed Communications Networks (MFCN) and Wireless Access Systems including Radio Local Area Networks (WAS/RLAN)";"=HYPERLINK(""http://docdb.cept.org/download/4790"")";"=HYPERLINK(""http://docdb.cept.org/document/28650"")"
 "ECC Reports";"ECC Report 367";"SE19";"2025-09-26";"Active";"Generic methodology for the protection of Fixed service to complement the criteria in Recommendation ITU-R F.758-8";"=HYPERLINK(""http://docdb.cept.org/download/4804"")";"=HYPERLINK(""http://docdb.cept.org/document/28654"")"
 "ECC Reports";"ECC Report 368";"NaN3";"2025-10-16";"Active";"SMS to 112 and other national emergency numbers for roaming end-users";"=HYPERLINK(""http://docdb.cept.org/download/4814"")";"=HYPERLINK(""http://docdb.cept.org/document/28657"")"
+"ECC Reports";"ECC Report 369";"SE7";"2026-01-30";"Active";"Technical Feasibility and Implications of Increasing Power for Private Mobile Radio in the 446.0-446.2 MHz Frequency Band";"=HYPERLINK(""http://docdb.cept.org/download/4878"")";"=HYPERLINK(""http://docdb.cept.org/document/28663"")"
+"ECC Reports";"ECC Report 370";"";"2026-01-30";"Active";"Sharing and Compatibility Studies of Microwave Security Scanners (MWSSc) in the 3.6-10.6 GHz frequency band with incumbent radio services";"=HYPERLINK(""http://docdb.cept.org/download/4876"")";"=HYPERLINK(""http://docdb.cept.org/document/28662"")"
+"ECC Reports";"ECC Report 373";"FM44";"2026-02-13";"Active";"Report will be published soon. This link is needed for another ECC deliverable to be sent to public consultation";"=HYPERLINK("""")";"=HYPERLINK(""http://docdb.cept.org/document/28664"")"
 "ECC Reports";"ECTRA Report 0101";"WGNaN";"2001-07-04";"Active";"Licensing report:
 IP Telephony";"=HYPERLINK(""http://docdb.cept.org/download/1907"")";"=HYPERLINK(""http://docdb.cept.org/document/519"")"
 "ECC Reports";"ECTRA Report 48263";"WGNaN";"1997-11-07";"Active";"Numbering report:
@@ -1889,6 +1893,7 @@ Additional mandate to the CEPT on updating harmonised technical conditions for i
 "EC Decisions";"Decision (EU) 2025/2425";"";"2025-12-02";"Active";"Commission Implementing Decision 2025/2425 of 2 December 2025 on the harmonisation of the 3800-4200 MHz frequency band for the shared use by terrestrial wireless broadband systems capable of providing local-area network connectivity in the Union ";"=HYPERLINK(""http://docdb.cept.org/download/4862"")";"=HYPERLINK(""http://docdb.cept.org/document/28661"")"
 "EC Decisions";"Decision (EU) 2025/650";;"2025-03-26";"Active";"Commission Implementing Decision (EU) 2025/650 of 26 March 2025 amending Implementing Decision (EU) 2018/1538 as regards the update of harmonised technical conditions for short-range devices within the 874-876 and 915-921 MHz frequency bands ";"=HYPERLINK(""http://docdb.cept.org/download/4679"")";"=HYPERLINK(""http://docdb.cept.org/document/28643"")"
 "EC Decisions";"Decision (EU) 2025/913 ";"";"2025-05-20";"Active";"Commission Implementing Decision (EU) 2025/913 of 20 May 2025 amending Implementing Decision (EU) 2021/1067 as regards an update of technical conditions for the harmonised use of radio spectrum in the 5945-6425 MHz frequency band for the implementation of wireless access systems including radio local area networks (WAS/RLANs)";"=HYPERLINK(""http://docdb.cept.org/download/4683"")";"=HYPERLINK(""http://docdb.cept.org/document/28648"")"
+"EC Decisions";"Decision (EU) 2026/291";;"2026-02-09";"Active";"Commission Implementing Decision (EU) 2026/291 of 9 February 2026 amending Implementing Decision (EU) 2021/1730, as regards additional use cases in the paired 874,4-880 MHz and 919,4-925 MHz frequency bands for Railway Mobile Radio ";"=HYPERLINK(""http://docdb.cept.org/download/4908"")";"=HYPERLINK(""http://docdb.cept.org/document/28665"")"
 "EC Decisions";"Decision 128/1999/EC";"";"1998-12-14";"Active";"Decision 14 December 1998 of the European Parliament and of the Council on the coordinated introduction of a third-generation mobile and wireless communications system (UMTS) in the Community";"=HYPERLINK(""http://docdb.cept.org/download/170"")";"=HYPERLINK(""http://docdb.cept.org/document/63"")"
 "EC Decisions";"Decision 243/2012/EU";"";"2012-03-21";"Active";"Decision No 243/2012/EU of the European Parliament and of the Council of 14 March 2012 establishing a multi-annual radio spectrum policy programme";"=HYPERLINK(""http://docdb.cept.org/download/171"")";"=HYPERLINK(""http://docdb.cept.org/document/2504"")"
 "EC Decisions";"Decision 676/2002/EC";"";"2002-03-07";"Active";"Decision of the European Parliament and of the Council of 7 March 2002 on a regulatory framework for radio spectrum policy in the European Community (Radio Spectrum Decision)";"=HYPERLINK(""http://docdb.cept.org/download/172"")";"=HYPERLINK(""http://docdb.cept.org/document/61"")"
