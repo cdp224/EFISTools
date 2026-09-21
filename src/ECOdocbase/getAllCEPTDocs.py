@@ -19,15 +19,27 @@ def create_directory(path):
         os.makedirs(path)
 
 # Function to download the file
+#def download_file(url, file_path):
+#    try:
+#        response = requests.get(url)
+#        response.raise_for_status()  # Check if the request was successful
+#        with open(file_path, 'wb') as file:
+#            file.write(response.content)
+#        print(f"Downloaded: {file_path}")
+#    except requests.exceptions.RequestException as e:
+#        print(f"Failed to download {url}. Error: {e}")
+
+# Function to download the file
 def download_file(url, file_path):
     try:
-        response = requests.get(url)
+        response = requests.get(url, verify=False)
         response.raise_for_status()  # Check if the request was successful
         with open(file_path, 'wb') as file:
             file.write(response.content)
         print(f"Downloaded: {file_path}")
     except requests.exceptions.RequestException as e:
         print(f"Failed to download {url}. Error: {e}")
+
 
 # Main function to process the CSV file
 def process_csv():
@@ -73,6 +85,11 @@ def process_csv():
                 # pdf_url = re.search(r'"(http[^"]+)"', pdf_url).group(1)
                 for i, pdf_url in enumerate(pdf_urls):            
                     # Sanitize title to create filename
+
+                    print("URL: " + pdf_url)
+                    pdf_url = pdf_url.replace("http", "https")
+                    print("URL https: " + pdf_url)
+                    
                     print("Title: " + title)
                     
                     sanitized_title = sanitize_filename(title)
