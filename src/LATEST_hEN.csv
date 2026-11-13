@@ -203,7 +203,7 @@
 "EN 302 617";"=HYPERLINK(""https://www.etsi.org/deliver/etsi_en/302600_302699/302617/02.03.01_60/en_302617v020301p.pdf"")";"335.4";"380.0";"MHz";"Defence systems"
 "EN 303 258";"=HYPERLINK(""https://www.etsi.org/deliver/etsi_en/303200_303299/303258/01.01.01_60/en_303258v010101p.pdf"")";"5725.0";"5875.0";"MHz";"WIA - Tracking, tracing and data acquisition - Short Range Devices"
 "EN 303 135";"=HYPERLINK(""http://www.etsi.org/deliver/etsi_en/303100_303199/303135/02.01.01_60/en_303135v020101p.pdf"")";"8500.0";"10000.0";"MHz";"Radiolocation (civil) - Other"
-"EN 303 360";"=HYPERLINK(""http://www.etsi.org/deliver/etsi_en/303300_303399/303360/01.01.00_20/en_303360v010100a.pdf"")";"76.0";"77.0";"GHz";"TTT - Short Range Devices"
+"EN 303 360";"=HYPERLINK(""https://www.etsi.org/deliver/etsi_en/303300_303399/303360/01.01.01_60/en_303360v010101p.pdf"")";"76.0";"77.0";"GHz";"TTT - Short Range Devices"
 "EN 303 084";"=HYPERLINK(""http://www.etsi.org/deliver/etsi_en/303000_303099/303084/02.01.01_60/en_303084v020101p.pdf"")";"108.0";"117.975";"MHz";"GBAS - Aeronautical navigation - Aeronautical"
 "EN 300 330";"=HYPERLINK(""https://www.etsi.org/deliver/etsi_en/300300_300399/300330/02.01.01_60/en_300330v020101p.pdf"")";"9.0";"30000.0";"kHz";"Inductive applications - Short Range Devices"
 "EN 300 330";"=HYPERLINK(""https://www.etsi.org/deliver/etsi_en/300300_300399/300330/02.01.01_60/en_300330v020101p.pdf"")";"12500.0";"20000.0";"kHz";"ULP-AID - Active medical implants - Short Range Devices"
