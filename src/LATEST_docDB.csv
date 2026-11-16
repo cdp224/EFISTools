@@ -1,4 +1,10 @@
 "Type";"Title";"Group";"Publish Date";"Status";"Description";"pdf";"Landing Page"
+"ECC Decisions";"ECC/DEC/(26)02";"FM44";"2026-10-30";"Active";"ECC/DEC/(26)02 of 30 October 2026 on the harmonised use and exemption from individual licensing of small IoT transmit-only terminals communicating with GSO FSS networks in the frequency band 14.0-14.25 GHz (IoT-S terminals)
+
+(ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5064"")";"=HYPERLINK(""http://docdb.cept.org/document/28695"")"
+"ECC Decisions";"ECC/DEC/(26)01";"FM44";"2026-10-30";"Active";"ECC/DEC/(26)01 of 30 October 2026 on the harmonised use and exemption from individual licensing of small IoT transmit-only terminals communicating with GSO FSS networks in the frequency band 5850-5875 MHz (IoT-S terminals)
+
+(ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5062"")";"=HYPERLINK(""http://docdb.cept.org/document/28694"")"
 "ECC Decisions";"ECC/DEC/(25)02";"FM44";"2026-10-30";"Active";"ECC/DEC/(25)02 of 27 June 2025 on low power devices communicating with satellites (LPD-S) within the frequency range 862-870 MHz 
 
 amended 30 October 2026 (ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5050"")";"=HYPERLINK(""http://docdb.cept.org/document/28652"")"
@@ -105,21 +111,21 @@ latest updated on 8 November 2024 (ECC#65)";"=HYPERLINK(""http://docdb.cept.org/
 "ECC Decisions";"ECC/DEC/(16)02";"FM62";"2019-03-08";"Active";"ECC/DEC/(16)02 of 17 June 2016 on harmonised technical conditions and frequency bands for the implementation of Broadband Public Protection and Disaster Relief (BB-PPDR) systems
 
 amended on 8 March 2019 (ECC#51)";"=HYPERLINK(""http://docdb.cept.org/download/1486"")";"=HYPERLINK(""http://docdb.cept.org/document/941"")"
-"ECC Decisions";"ECC/DEC/(16)01";"SRDMG";"2016-11-18";"Active";"ECC/DEC/(16)01 of 4 March 2016 on the harmonised frequency band 76-77 GHz, technical characteristics, exemption from individual licensing and free carriage and use of obstacle detection radars for rotorcraft use
+"ECC Decisions";"ECC/DEC/(16)01";"SRDMG";"2026-10-30";"Active";"ECC/DEC/(16)01 of 4 March 2016 on the harmonised frequency band 76-77 GHz, technical characteristics, exemption from individual licensing and free carriage and use of obstacle detection radars for rotorcraft use
 
-corrected on 18 November 2016 (ECC#43)";"=HYPERLINK(""http://docdb.cept.org/download/1488"")";"=HYPERLINK(""http://docdb.cept.org/document/449"")"
-"ECC Decisions";"ECC/DEC/(15)05";"FM62";"2018-03-02";"Active";"ECC/DEC/(15)05 of 3 July 2015 on the harmonised frequency range 446.0-446.2 MHz, technical characteristics, exemption from individual licensing and free carriage and use of analogue and digital PMR 446 applications
+latest updated on 30 October 2026 (ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5066"")";"=HYPERLINK(""http://docdb.cept.org/document/449"")"
+"ECC Decisions";"ECC/DEC/(15)05";"FM62";"2026-10-30";"Active";"ECC/DEC/(15)05 of 3 July 2015 on the harmonised frequency range 446.0-446.2 MHz, technical characteristics, exemption from individual licensing and free carriage and use of analogue and digital PMR 446 applications
 
-amended on 2 March 2018 (ECC#47)";"=HYPERLINK(""http://docdb.cept.org/download/1491"")";"=HYPERLINK(""http://docdb.cept.org/document/448"")"
+amended on 30 October 2026 (ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5068"")";"=HYPERLINK(""http://docdb.cept.org/document/448"")"
 "ECC Decisions";"ECC/DEC/(15)04";"FM44";"2020-11-20";"Active";"ECC/DEC/(15)04 of 3 July 2015 on the harmonised use, free circulation and exemption from individual licensing of Land, Maritime and Aeronautical Earth Stations On Mobile Platforms (ESOMPs) operating with NGSO FSS satellite systems in the frequency ranges 17.3-20.2 GHz, 27.5-29.1 GHz and 29.5-30.0 GHz
  
 latest amended on 20 November 2020 (ECC#54)
 ";"=HYPERLINK(""http://docdb.cept.org/download/1496"")";"=HYPERLINK(""http://docdb.cept.org/document/447"")"
 "ECC Decisions";"ECC/DEC/(15)03";"WGFM";"2015-07-03";"Withdrawn";"ECC/DEC/(15)03 of 3 July 2015 on the harmonised use of broadband Direct Air-to-Ground Communications (DA2GC) systems in the frequency band 5855-5875 MHz";"=HYPERLINK(""http://docdb.cept.org/download/1498"")";"=HYPERLINK(""http://docdb.cept.org/document/446"")"
 "ECC Decisions";"ECC/DEC/(15)02";"WGFM";"2015-07-03";"Withdrawn";"ECC/DEC/(15)02 of 3 July 2015 on the harmonised use of broadband Direct Air-to-Ground Communications (DA2GC) systems in the frequency band 1900-1920 MHz";"=HYPERLINK(""http://docdb.cept.org/download/1500"")";"=HYPERLINK(""http://docdb.cept.org/document/445"")"
-"ECC Decisions";"ECC/DEC/(15)01";"ECC PT1";"2015-03-06";"Active";"ECC/DEC/(15)01 of 6 March 2015 on Harmonised technical conditions for mobile/fixed communications networks (MFCN) in the band 694-790 MHz including a paired frequency arrangement (Frequency Division Duplex 2x30 MHz) and an optional unpaired frequency arrangement (Supplemental Downlink)
+"ECC Decisions";"ECC/DEC/(15)01";"ECC PT1";"2026-10-30";"Active";"ECC/DEC/(15)01 of 6 March 2015 on Harmonised technical conditions for mobile/fixed communications networks (MFCN) in the band 694-790 MHz including a paired frequency arrangement (Frequency Division Duplex 2x30 MHz) and an optional unpaired frequency arrangement (Supplemental Downlink)
 
-(ECC#39)";"=HYPERLINK(""http://docdb.cept.org/download/1502"")";"=HYPERLINK(""http://docdb.cept.org/document/444"")"
+amended 30 October 2026 (ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5072"")";"=HYPERLINK(""http://docdb.cept.org/document/444"")"
 "ECC Decisions";"ECC/DEC/(14)02";"ECC PT1";"2023-03-10";"Active";"ECC/DEC/(14)02 of 27 June 2014 on Harmonised technical and regulatory conditions for the use of the band 2300-2400 MHz for Mobile/Fixed Communications Networks (MFCN)
 
 amended 10 March 2023 (ECC#61)
@@ -337,12 +343,6 @@ amended on 8 March 2019 (ECC#51)";"=HYPERLINK(""http://docdb.cept.org/download/1
 annexes 1 and 5 were latest amended on 9 October 2026 (FM#114)";"=HYPERLINK(""http://docdb.cept.org/download/5018"")";"=HYPERLINK(""http://docdb.cept.org/document/1012"")"
 "ECC Decisions";"ECC/DEC/(01)02";"";"2001-11-15";"Withdrawn";"ECC/DEC/(01)02 of 15 November 2001 on phasing out digital CT2 applications in the 900 MHz band";"=HYPERLINK(""http://docdb.cept.org/download/1732"")";"=HYPERLINK(""http://docdb.cept.org/document/354"")"
 "ECC Decisions";"ECC/DEC/(01)01";"";"2001-11-15";"Withdrawn";"ECC/DEC/(01)01 of 15 November 2001 on Phasing out analogue CT1 and CT1+ applications in the 900 MHz band";"=HYPERLINK(""http://docdb.cept.org/download/1736"")";"=HYPERLINK(""http://docdb.cept.org/document/353"")"
-"ECC Decisions";"ECC/DEC/26)01";"FM44";"2026-10-30";"Active";"ECC/DEC/26)01 of 30 October 2026 on the harmonised use and exemption from individual licensing of small IoT transmit-only terminals communicating with GSO FSS networks in the frequency band 5850-5875 MHz (IoT-S terminals)
-
-(ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5052"")";"=HYPERLINK(""http://docdb.cept.org/document/28694"")"
-"ECC Decisions";"ECC/DEC/26)02";"FM44";"2026-10-30";"Active";"ECC/DEC/26)02 of 30 October 2026 on the harmonised use and exemption from individual licensing of small IoT transmit-only terminals communicating with GSO FSS networks in the frequency band 14.0-14.25 GHz (IoT-S terminals)
-
-(ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5054"")";"=HYPERLINK(""http://docdb.cept.org/document/28695"")"
 "ECC Decisions";"ECTRA/DEC/(99)05";"";"1999-12-02";"Withdrawn";"ECTRA/DEC/(99)05 on the establishment of a regulatory database of licensing regimes for telecommunication networks and services";"=HYPERLINK(""http://docdb.cept.org/download/1962"")";"=HYPERLINK(""http://docdb.cept.org/document/554"")"
 "ECC Decisions";"ECTRA/DEC/(99)04";"";"1999-12-02";"Withdrawn";"ECTRA/DEC/(99)04 on the adoption of approval regulations for radio equipment to be used in the land mobile service for Terrestrial Trunked Radio System (TETRA) based on the TBR 035";"=HYPERLINK(""http://docdb.cept.org/download/1963"")";"=HYPERLINK(""http://docdb.cept.org/document/553"")"
 "ECC Decisions";"ECTRA/DEC/(99)03";"";"1999-12-02";"Withdrawn";"ECTRA/DEC/(99)03 on carrier pre-selection";"=HYPERLINK(""http://docdb.cept.org/download/1964"")";"=HYPERLINK(""http://docdb.cept.org/document/552"")"
@@ -654,9 +654,9 @@ amended on 22 May 2015";"=HYPERLINK(""http://docdb.cept.org/download/1800"")";"=
 "ECC Recommendations";"ECC/REC/(11)06";"FM22";"2016-10-17";"Active";"ECC/REC/(11)06 of 21 October 2011 Block Edge Mask Compliance Measurements for Base Stations
 
 latest amended on 17 October 2016 (FM#86)";"=HYPERLINK(""http://docdb.cept.org/download/1805"")";"=HYPERLINK(""http://docdb.cept.org/document/502"")"
-"ECC Recommendations";"ECC/REC/(11)05";"ECC PT1";"2024-03-08";"Active";"ECC/REC/(11)05 of 26 May 2011 on cross-border Coordination for Mobile/Fixed Communications Networks (MFCN) in the frequency band 2500-2690 MHz
+"ECC Recommendations";"ECC/REC/(11)05";"ECC PT1";"2026-10-30";"Active";"ECC/REC/(11)05 of 26 May 2011 on cross-border Coordination for Mobile/Fixed Communications Networks (MFCN) in the frequency band 2500-2690 MHz
 
-latest corrected on 8 March 2024 (ECC#63)";"=HYPERLINK(""http://docdb.cept.org/download/4591"")";"=HYPERLINK(""http://docdb.cept.org/document/501"")"
+latest amended on 30 October 2026 (ECC#71)";"=HYPERLINK(""http://docdb.cept.org/download/5074"")";"=HYPERLINK(""http://docdb.cept.org/document/501"")"
 "ECC Recommendations";"ECC/REC/(11)04";"ECC PT1";"2025-11-07";"Active";"ECC/REC/(11)04 of 26 May 2011 on cross-border Coordination for Mobile/Fixed Communications Networks (MFCN) in the frequency band 791-862 MHz
 
 latest amended on 7 November 2025 (ECC#68)";"=HYPERLINK(""http://docdb.cept.org/download/4842"")";"=HYPERLINK(""http://docdb.cept.org/document/500"")"
@@ -1897,7 +1897,7 @@ Additional mandate to the CEPT on updating harmonised technical conditions for i
 
 “to study feasibility of and develop least restrictive harmonised technical conditions for the use of EU-harmonised frequency bands for terrestrial wireless systems providing electronic communications services by satellite systems providing direct-to-device-IMT connectivity”
 
-Report A: operational feasibility, coexistence and compatibility scenarios for the use of the EU-harmonised frequency bands for terrestrial wireless systems capable of providing ECS by satellite systems capable of providing D2D-IMT connectivity.
+Report A: operational feasibility, coexistence and compatibility scenarios for the use of the EU-harmonised frequency bands for terrestrial wireless systems capable of providing ECS by satellite systems capable of providing D2D-IMT connectivity
 ";"=HYPERLINK(""http://docdb.cept.org/download/5045"")";"=HYPERLINK(""http://docdb.cept.org/document/28692"")"
 "CEPT Reports";"CEPT Report 094";"ECC PT1";"2026-10-30";"Active";"Report from CEPT to the European Commission in response to the Mandate on 6425-7125 MHz – Task 2. Study of feasibility and scenarios for the potential shared use between terrestrial systems capable of providing WBB ECS and WAS/RLANs";"=HYPERLINK(""http://docdb.cept.org/download/5047"")";"=HYPERLINK(""http://docdb.cept.org/document/28693"")"
 "EC Decisions";"Commission Recommendation 2003/558/EC";"";"2003-07-25";"Active";"Commission Recommendation of 25 July 2003 on the processing of caller location information in electronic communication networks for the purpose of location-enhanced emergency call services";"=HYPERLINK(""http://docdb.cept.org/download/144"")";"=HYPERLINK(""http://docdb.cept.org/document/108"")"
